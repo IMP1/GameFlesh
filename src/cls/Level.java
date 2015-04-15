@@ -6,7 +6,7 @@ import cls.trap.Trap;
 
 public class Level {
 	
-	public final static int TILE_SIZE = 16;
+	public final static int TILE_SIZE = 48;
 	
 	public enum Tile {
 		NONE(0, 0, 0),
@@ -49,6 +49,20 @@ public class Level {
 		this.endY = endY;
 		width = tiles[0].length;
 		height = tiles.length;
+	}
+	
+	public Tile getTile(int x, int y) {
+		if (y >= 0 && y < height && x >= 0 && x < width) {
+			return tiles[y][x];
+		} else {
+			return Tile.NONE;
+		}
+	}
+	
+	public boolean isExit(int x, int y) {
+		if (x == startX && y == startY) return true;
+		if (x == endX && y == endY) return true;
+		return false;
 	}
 
 }

@@ -95,6 +95,7 @@ public class LevelGenerator {
 		addTraps();
 		createColumns();
 		addEnemies();
+		addTreasure();
 	}
 
 	private static void createRooms() {
@@ -645,6 +646,10 @@ public class LevelGenerator {
 	
 	private static void addBossEnemy() {
 		enemies.add(new SkeletonEnemy(bossX, bossY));
+	}
+	
+	private static void addTreasure() {
+		// TODO add treasuse
 	}
 	
 	private static boolean validEnemyPlacement(int x, int y) {
