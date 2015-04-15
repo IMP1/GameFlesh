@@ -2,11 +2,15 @@ package scn;
 
 import java.awt.event.KeyEvent;
 
+import cls.LevelGenerator;
+
 public class Title extends Scene {
 
 	private enum Stage {
 		INITIAL_SCROLL,
 		MENU_FADE_IN,
+		
+		LOADING_MAP,
 	}
 	
 	private Stage currentStage;
@@ -27,16 +31,19 @@ public class Title extends Scene {
 	@Override
 	public void update(double dt) {
 		timer += dt;
-		if (currentStage == Stage.INITIAL_SCROLL) {
-			for (lib.Parallax p : backgrounds) {
-				p.scroll(dt * 256, 0);
-			}
-			if (timer >= 8) {
-				currentStage = Stage.MENU_FADE_IN;
-			}
+		for (lib.Parallax p : backgrounds) {
+			p.scroll(dt * 256, 0);
 		}
-		
-		logoPosition = lib.Easing.bezierCurve(timer, 128, 2, 0, -0.5, 1.5, 1);
+		if (timer >= 2 && currentStage == Stage.INITIAL_SCROLL) {
+			currentStage = Stage.MENU_FADE_IN;
+		}
+		if (currentStage == Stage.MENU_FADE_IN) {
+			logoPosition = lib.Easing.bezierCurve(timer - 2, 128, 2, 0, -0.5, 1.5, 1);
+		}
+		if (currentStage == Stage.LOADING_MAP && LevelGenerator.isFinished()) {
+			SceneManager.setScene(new Map(LevelGenerator.getGeneratedMap()));
+			return;
+		}
 	}
 
 	@Override
@@ -47,8 +54,15 @@ public class Title extends Scene {
 			p.draw();
 		}
 		jog.Graphics.pop();
-		jog.Graphics.printCentred("Mnul", 0, logoPosition + 64, jog.Window.getWidth());
-		
+		if (currentStage == Stage.MENU_FADE_IN) {
+			jog.Graphics.printCentred("Mnul", 0, logoPosition -64, jog.Window.getWidth());
+		}
+		if (currentStage == Stage.LOADING_MAP) {
+			jog.Graphics.push();
+			jog.Graphics.scale(2, 2);
+			jog.Graphics.printCentred(LevelGenerator.getMessage(), 0, 128, jog.Window.getWidth() / 2);
+			jog.Graphics.pop();
+		}
 		// Draw debug
 		jog.Graphics.print(String.format("%.2f", timer), 0, 0);
 	}
@@ -61,7 +75,10 @@ public class Title extends Scene {
 
 	@Override
 	public void keyPressed(int key) {
-		
+		if (key == KeyEvent.VK_SPACE) {
+			currentStage = Stage.LOADING_MAP;
+			LevelGenerator.generateMap();
+		}
 	}
 
 	@Override
