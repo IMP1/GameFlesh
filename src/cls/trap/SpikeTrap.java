@@ -6,4 +6,9 @@ public class SpikeTrap extends Trap {
 		super(x, y, "Spike Trap");
 	}
 
+	@Override
+	public void trigger(scn.Map scene) {
+		
+	}
+
 }

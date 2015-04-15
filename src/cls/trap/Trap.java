@@ -13,6 +13,8 @@ public abstract class Trap {
 		this.triggered = false;
 	}
 	
+	public void update(double dt) {}
+	
 	public void draw() {
 		int w = cls.Level.TILE_SIZE;
 		int h = cls.Level.TILE_SIZE;
@@ -28,5 +30,7 @@ public abstract class Trap {
 	public String toString() {
 		return name;
 	}
+	
+	public abstract void trigger(scn.Map scene);
 
 }

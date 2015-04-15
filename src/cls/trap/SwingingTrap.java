@@ -14,4 +14,9 @@ public class SwingingTrap extends Trap {
 		this.direction = direction;
 	}
 
+	@Override
+	public void trigger(scn.Map scene) {
+		
+	}
+
 }

@@ -39,5 +39,10 @@ public class ArrowTrap extends Trap {
 			j >= Math.min(y, ballistaY) && j <= Math.max(y,  ballistaY)
 		);
 	}
+
+	@Override
+	public void trigger(scn.Map scene) {
+		
+	}
 	
 }
