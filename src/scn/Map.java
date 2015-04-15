@@ -1,17 +1,22 @@
 package scn;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 import lib.Camera;
 
 import cls.Level;
+import cls.Projectile;
 import cls.trap.Trap;
 import cls.enemy.Enemy;
+import cls.Player;
 
 public class Map extends Scene {
 	
 	private Level map;
 	private Camera camera;
+	private Player player;
+	private ArrayList<Projectile> projectiles;
 
 	public Map(Level map) {
 		this.map = map;
@@ -21,6 +26,8 @@ public class Map extends Scene {
 	public void start() {
 		jog.Graphics.setBackgroundColour(108, 128, 128);
 		camera = new Camera(0, 0, map.width * Level.TILE_SIZE, map.height * Level.TILE_SIZE);
+		player = new Player(map.startX, map.startY);
+		projectiles = new ArrayList<Projectile>();
 	}
 
 	@Override
@@ -39,7 +46,9 @@ public class Map extends Scene {
 		if (jog.Input.isKeyDown(KeyEvent.VK_D)) {
 			dx += dt * 128;
 		}
-		camera.move(dx, dy);
+		player.move(dx, dy);
+		camera.centreOn(player.getX(), player.getY());
+		updateProjectiles(dt);
 	}
 
 	@Override
@@ -69,8 +78,37 @@ public class Map extends Scene {
 		for (Enemy e : map.enemies) {
 			e.draw();
 		}
+		player.draw();
+		drawProjectiles();
+	}
+	
+	public boolean isPassable(double x, double y) {
+		int mx = (int)(x / Level.TILE_SIZE);
+		int my = (int)(y / Level.TILE_SIZE);
+		return map.getTile(mx, my).isFloor() || map.isExit(mx, my);
+	}
+	
+	public void addProjectile(Projectile p) {
+		projectiles.add(p);
+	}
+	
+	private void updateProjectiles(double dt) {
+		for (Projectile p : projectiles) {
+			p.update(dt, this);
+		}
+		for (int i = projectiles.size() - 1; i >= 0; i --) {
+			if (projectiles.get(i).isFinished()) {
+				projectiles.remove(i);
+			}
+		}
 	}
 
+	private void drawProjectiles() {
+		for (Projectile p : projectiles) {
+			p.draw();
+		}
+	}
+	
 	@Override
 	public void close() {
 		
@@ -85,7 +123,17 @@ public class Map extends Scene {
 	public void keyReleased(int key) {}
 
 	@Override
-	public void mousePressed(int mouseX, int mouseY, int mouseKey) {}
+	public void mousePressed(int mouseX, int mouseY, int mouseKey) {
+		int mx = (mouseX + (int)camera.getX()) / Level.TILE_SIZE;
+		int my = (mouseY + (int)camera.getY()) / Level.TILE_SIZE;
+		if (mx >= 0 && mx < map.width && my >= 0 && my < map.height) {
+			for (Trap t : map.traps) {
+				if (t.isAt(mx, my)) {
+					t.trigger(this);
+				}
+			}
+		}
+	}
 
 	@Override
 	public void mouseReleased(int mouseX, int mouseY, int mouseKey) {}
