@@ -1,6 +1,5 @@
 package cls;
 
-import java.awt.Point;
 import java.util.HashMap;
 
 import scn.SceneManager;
@@ -41,7 +40,7 @@ public class Player {
 	public void move(double dx, double dy) {
 		double newX = x + dx;
 		double newY = y + dy;
-		if (((scn.Map)SceneManager.scene()).isPassable(newX, newY)) {
+		if (((scn.Map)SceneManager.scene()).isPixelPassable(newX, newY)) {
 			x = newX;
 			y = newY;
 		}
@@ -58,6 +57,18 @@ public class Player {
 	
 	public double getY() {
 		return y;
+	}
+	
+	public int getMapX() {
+		return (int)(x / Level.TILE_SIZE);
+	}
+	
+	public int getMapY() {
+		return (int)(y / Level.TILE_SIZE);
+	}
+	
+	public int getSightRadius() {
+		return 6;
 	}
 	
 }

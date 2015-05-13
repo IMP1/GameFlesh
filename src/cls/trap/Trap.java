@@ -16,10 +16,12 @@ public abstract class Trap {
 	public void update(double dt) {}
 	
 	public void draw() {
-		int w = cls.Level.TILE_SIZE;
-		int h = cls.Level.TILE_SIZE;
-		jog.Graphics.setColour(128, 0, 0, 128);
-		jog.Graphics.rectangle(true, x * w, y * h, w, h);
+		if (((scn.Map)scn.SceneManager.scene()).hasVisited(x, y)) {
+			int w = cls.Level.TILE_SIZE;
+			int h = cls.Level.TILE_SIZE;
+			jog.Graphics.setColour(128, 0, 0, 128);
+			jog.Graphics.rectangle(true, x * w, y * h, w, h);
+		}
 	}
 	
 	public boolean isAt(int i, int j) {

@@ -1,6 +1,5 @@
 package cls.trap;
 
-import cls.Level;
 import cls.Projectile;
 
 public class BoulderTrap extends Trap {
@@ -12,7 +11,7 @@ public class BoulderTrap extends Trap {
 		private double dx, dy;
 		
 		private Boulder(int x, int y, int dx, int dy) {
-			super((x + 0.5) * Level.TILE_SIZE, (y + 0.5) * Level.TILE_SIZE);
+			super((x + 0.5) * cls.Level.TILE_SIZE, (y + 0.5) * cls.Level.TILE_SIZE);
 			this.dx = dx * SPEED;
 			this.dy = dy * SPEED;
 		}
@@ -20,7 +19,7 @@ public class BoulderTrap extends Trap {
 		public void update(double dt, scn.Map scene) {
 			double newX = x + (dx * dt);
 			double newY = y + (dy * dt);
-			if (scene.isPassable(newX, newY)) {
+			if (scene.isPixelPassable(newX, newY)) {
 				x = newX;
 				y = newY;
 			} else {
@@ -47,10 +46,12 @@ public class BoulderTrap extends Trap {
 	@Override
 	public void draw() {
 		super.draw();
-		drawPressurePlate();
+		if (((scn.Map)scn.SceneManager.scene()).hasVisited(boulderX, boulderY)) {
+			drawBoulderEnterPoint(); // TODO: remove once boulders are spawning into view.
+		}
 	}
 	
-	private void drawPressurePlate() {
+	private void drawBoulderEnterPoint() {
 		int w = cls.Level.TILE_SIZE;
 		int h = cls.Level.TILE_SIZE;
 		jog.Graphics.setColour(128, 0, 0, 64);
@@ -77,7 +78,7 @@ public class BoulderTrap extends Trap {
 		if (x > boulderX) dx = 1;
 		if (y < boulderY) dy = -1;
 		if (y > boulderY) dy = 1;
-		if (scene.isPassable(ox - dx, oy - dy)) {
+		if (scene.isTilePassable(ox - dx, oy - dy)) {
 			ox -= dx;
 			oy -= dy;
 		}

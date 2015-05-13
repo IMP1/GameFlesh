@@ -13,25 +13,45 @@ import cls.Player;
 
 public class Map extends Scene {
 	
-	private Level map;
+	private Level level;
 	private Camera camera;
-	private Player player;
+	private Player[] players;
 	private ArrayList<Projectile> projectiles;
+	private boolean[][] visible;
+	private boolean[][] visited;
 
-	public Map(Level map) {
-		this.map = map;
+	public Map(Level level) {
+		this.level = level;
 	}
 
 	@Override
 	public void start() {
-		jog.Graphics.setBackgroundColour(108, 128, 128);
-		camera = new Camera(0, 0, map.width * Level.TILE_SIZE, map.height * Level.TILE_SIZE);
-		player = new Player(map.startX, map.startY);
+		jog.Graphics.setBackgroundColour(64, 64, 64);
+		camera = new Camera();
+		camera = new Camera(0, 0, level.width * Level.TILE_SIZE, level.height * Level.TILE_SIZE);
+		players = new Player[1];
+		players[0] = new Player(level.startX, level.startY);
 		projectiles = new ArrayList<Projectile>();
+		visible = new boolean[level.height][level.width];
+		visited = new boolean[level.height][level.width];
+		updateCamera();
+		updateVisibility();
 	}
 
 	@Override
 	public void update(double dt) {
+		boolean movement = false;
+		for (Player p : players) {
+			movement = movement || updatePlayerMovement(p, dt);
+		}
+		if (movement) {
+			updateCamera();
+			updateVisibility();
+		}
+		updateProjectiles(dt);
+	}
+	
+	private boolean updatePlayerMovement(Player p, double dt) {
 		double dx = 0;
 		double dy = 0;
 		if (jog.Input.isKeyDown(KeyEvent.VK_W)) {
@@ -46,11 +66,84 @@ public class Map extends Scene {
 		if (jog.Input.isKeyDown(KeyEvent.VK_D)) {
 			dx += dt * 128;
 		}
-		player.move(dx, dy);
-		camera.centreOn(player.getX(), player.getY());
-		updateProjectiles(dt);
+		if (dx != 0 || dy != 0) {
+			p.move(dx, dy);
+			return true;
+		}
+		return false;
 	}
 
+	private void updateVisibility() {
+		for (int j = 0; j < visible.length; j ++) {
+			for (int i = 0; i < visible[j].length; i ++) {
+				visible[j][i] = false;
+			}
+		}
+		for (Player p : players) {
+			updateVisibility(p);
+		}
+		for (int j = 0; j < visible.length; j ++) {
+			for (int i = 0; i < visible[j].length; i ++) {
+				if (visible[j][i]) visited[j][i] = true;
+			}
+		}
+	}
+	
+	private void updateVisibility(Player player) {
+		int r = player.getSightRadius() * Level.TILE_SIZE;
+		int px = (int)player.getX();
+		int py = (int)player.getY();
+		for (int theta = 0; theta < 360; theta ++) {
+			double a = Math.PI * theta / 180;
+			raycastAngle(px, py, a + 0.0 * Math.PI, r);
+		}
+	}
+	
+	private void raycastAngle(int ox, int oy, double angle, int maxRadius) {
+		for (int r = 0; r < maxRadius; r ++) {
+			int x = ox + (int)(Math.cos(angle) * r);
+			int y = oy + (int)(Math.sin(angle) * r);
+			int i = x / Level.TILE_SIZE;
+			int j = y / Level.TILE_SIZE;
+			if (isTileOpaque(i, j)) {
+				if (isInMap(i, j)) visible[j][i] = true;
+				return;
+			} else {
+				visible[j][i] = true;
+			}
+		}
+	}
+	
+	private void updateCamera() {
+		double x = 0, y = 0;
+		double minX = -1, minY = -1, maxX = -1, maxY = -1;
+		for (Player p : players) {
+			x += p.getX();
+			y += p.getY();
+			if (minX == -1 || x < minX) minX = x;
+			if (minY == -1 || y < minY) minY = y;
+			if (maxX == -1 || x > maxX) maxX = x;
+			if (maxY == -1 || y > maxY) maxY = y;
+		}
+		x /= players.length;
+		y /= players.length;
+		camera.centreOn(x, y);
+		if (players.length > 1) {
+			updateCameraZoom(maxX - minX, maxY - minY);
+		}
+	}
+	
+	private void updateCameraZoom(double xDifference, double yDifference) {
+		// TODO: Do this when multiplayer works.
+		getMinZoom();
+	}
+	
+	private double getMinZoom() {
+		double ratioWidth  = (double)(level.width  * Level.TILE_SIZE) / jog.Window.getWidth();
+		double ratioHeight = (double)(level.height * Level.TILE_SIZE) / jog.Window.getHeight();
+		return Math.max(ratioWidth, ratioHeight);
+	}
+	
 	@Override
 	public void draw() {
 		camera.set();
@@ -59,33 +152,60 @@ public class Map extends Scene {
 	}
 	
 	private void drawMap() {
-		for (int j = 0; j < map.tiles.length; j ++) {
-			for (int i = 0; i < map.tiles[j].length; i ++) {
-				jog.Graphics.setColour(map.tiles[j][i].color);
-				jog.Graphics.rectangle(true, i * Level.TILE_SIZE, j * Level.TILE_SIZE, Level.TILE_SIZE, Level.TILE_SIZE);
-				jog.Graphics.setColour(255, 255, 255, 96);
-				jog.Graphics.rectangle(false, i * Level.TILE_SIZE, j * Level.TILE_SIZE, Level.TILE_SIZE, Level.TILE_SIZE);
+		for (int j = 0; j < level.tiles.length; j ++) {
+			for (int i = 0; i < level.tiles[j].length; i ++) {
+				if (hasVisited(i, j)) {
+					jog.Graphics.setColour(level.tiles[j][i].color);
+					jog.Graphics.rectangle(true, i * Level.TILE_SIZE, j * Level.TILE_SIZE, Level.TILE_SIZE, Level.TILE_SIZE);
+				}
+				if (!isVisible(i, j)) {
+					jog.Graphics.setColour(0, 0, 32, 96);
+					jog.Graphics.rectangle(true, i * Level.TILE_SIZE, j * Level.TILE_SIZE, Level.TILE_SIZE, Level.TILE_SIZE);
+				}
 			}
 		}
 		// ---
 		jog.Graphics.setColour(255, 255, 255);
-		jog.Graphics.printCentred("S", map.startX * Level.TILE_SIZE, map.startY * Level.TILE_SIZE, Level.TILE_SIZE);
-		jog.Graphics.printCentred("E", map.endX * Level.TILE_SIZE, map.endY * Level.TILE_SIZE, Level.TILE_SIZE);
+		jog.Graphics.printCentred("S", level.startX * Level.TILE_SIZE, level.startY * Level.TILE_SIZE, Level.TILE_SIZE);
+		jog.Graphics.printCentred("E", level.endX * Level.TILE_SIZE, level.endY * Level.TILE_SIZE, Level.TILE_SIZE);
 		// ---
-		for (Trap t : map.traps) {
+		for (Trap t : level.traps) {
 			t.draw();
 		}
-		for (Enemy e : map.enemies) {
+		for (Enemy e : level.enemies) {
 			e.draw();
 		}
-		player.draw();
+		for (Player p : players) {
+			p.draw();
+		}
 		drawProjectiles();
 	}
 	
-	public boolean isPassable(double x, double y) {
-		int mx = (int)(x / Level.TILE_SIZE);
-		int my = (int)(y / Level.TILE_SIZE);
-		return map.getTile(mx, my).isFloor() || map.isExit(mx, my);
+	public boolean isInMap(int i, int j) {
+		return i >= 0 && i < level.width && j >= 0 && j < level.height;
+	}
+	
+	public boolean isPixelPassable(double x, double y) {
+		int i = (int)(x / Level.TILE_SIZE);
+		int j = (int)(y / Level.TILE_SIZE);
+		return isTilePassable(i, j);
+	}
+	
+	public boolean isTilePassable(int i, int j) {
+		return isInMap(i, j) && (level.getTile(i, j).isFloor() || level.isExit(i, j));
+	}
+	
+	public boolean isTileOpaque(int i, int j) { 
+		return !isTilePassable(i, j);
+	}
+	
+	public boolean isVisible(int i, int j) {
+		return visible[j][i];
+	}
+	
+	public boolean hasVisited(int i, int j) {
+		return true;
+//		return visited[j][i];
 	}
 	
 	public void addProjectile(Projectile p) {
@@ -126,8 +246,8 @@ public class Map extends Scene {
 	public void mousePressed(int mouseX, int mouseY, int mouseKey) {
 		int mx = (mouseX + (int)camera.getX()) / Level.TILE_SIZE;
 		int my = (mouseY + (int)camera.getY()) / Level.TILE_SIZE;
-		if (mx >= 0 && mx < map.width && my >= 0 && my < map.height) {
-			for (Trap t : map.traps) {
+		if (mx >= 0 && mx < level.width && my >= 0 && my < level.height) {
+			for (Trap t : level.traps) {
 				if (t.isAt(mx, my)) {
 					t.trigger(this);
 				}

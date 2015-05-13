@@ -12,9 +12,13 @@ public class Enemy {
 	}
 
 	public void draw() {
-		jog.Graphics.setColour(256, 256, 256);
-		jog.Graphics.circle(true, x, y, 4);
-		jog.Graphics.print("!", x + 4, y - 16);
+		int i = x / cls.Level.TILE_SIZE;
+		int j = y / cls.Level.TILE_SIZE;
+		if (((scn.Map)scn.SceneManager.scene()).isVisible(i, j)) {
+			jog.Graphics.setColour(256, 256, 256);
+			jog.Graphics.circle(true, x, y, 4);
+			jog.Graphics.print("!", x + 4, y - 16);
+		}
 	}
 	
 	public boolean isAt(int i, int j){
