@@ -2,30 +2,43 @@ package cls.trap;
 
 public abstract class Trap {
 	
-	protected int x, y;
+	protected int triggerX, triggerY;
 	protected boolean triggered;
 	public final String name;
+	protected final int minTriggerableMass;
+	protected final int maxTriggerableMass;
 
 	public Trap(int x, int y, String name) {
-		this.x = x;
-		this.y = y;
+		this(x, y, name, 1, Integer.MAX_VALUE);
+	}
+	public Trap(int x, int y, String name, int minTriggerableMass, int maxTriggerableMass) {
+		this.triggerX = x;
+		this.triggerY = y;
 		this.name = name;
+		this.minTriggerableMass = minTriggerableMass;
+		this.maxTriggerableMass = maxTriggerableMass;
 		this.triggered = false;
 	}
 	
-	public void update(double dt) {}
+	public void update(double dt, scn.Map scene) {
+		for (cls.ObjectWithMass obj : scene.getObjectsWithMass()) {
+			if (obj.isAtTile(triggerX, triggerY) && obj.getMass() >= minTriggerableMass && obj.getMass() <= maxTriggerableMass) {
+				trigger(scene);
+			}
+		}
+	}
 	
 	public void draw() {
-		if (((scn.Map)scn.SceneManager.scene()).hasVisited(x, y)) {
+		if (((scn.Map)scn.SceneManager.scene()).hasVisited(triggerX, triggerY)) {
 			int w = cls.Level.TILE_SIZE;
 			int h = cls.Level.TILE_SIZE;
-			jog.Graphics.setColour(128, 0, 0, 128);
-			jog.Graphics.rectangle(true, x * w, y * h, w, h);
+			jog.Graphics.setColour(64, 64, 64, 64);
+			jog.Graphics.rectangle(true, triggerX * w + 4, triggerY * h + 4, w - 8, h - 8);
 		}
 	}
 	
 	public boolean isAt(int i, int j) {
-		return (x == i && y == j);
+		return (triggerX == i && triggerY == j);
 	}
 	
 	@Override

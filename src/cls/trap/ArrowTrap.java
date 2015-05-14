@@ -37,8 +37,8 @@ public class ArrowTrap extends Trap {
 	@Override
 	public boolean isAt(int i, int j) {
 		return (
-			i >= Math.min(x, ballistaX) && i <= Math.max(x,  ballistaX) &&
-			j >= Math.min(y, ballistaY) && j <= Math.max(y,  ballistaY)
+			i >= Math.min(triggerX, ballistaX) && i <= Math.max(triggerX,  ballistaX) &&
+			j >= Math.min(triggerY, ballistaY) && j <= Math.max(triggerY,  ballistaY)
 		);
 	}
 
