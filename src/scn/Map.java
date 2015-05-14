@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import lib.Camera;
 
 import cls.Level;
+import cls.ObjectWithMass;
+import cls.ItemDrop;
 import cls.Projectile;
+import cls.trap.BoulderTrap.Boulder;
 import cls.trap.Trap;
 import cls.enemy.Enemy;
 import cls.Player;
@@ -17,6 +20,7 @@ public class Map extends Scene {
 	private Camera camera;
 	private Player[] players;
 	private ArrayList<Projectile> projectiles;
+	private ArrayList<ItemDrop> itemDrops;
 	private boolean[][] visible;
 	private boolean[][] visited;
 
@@ -32,6 +36,7 @@ public class Map extends Scene {
 		players = new Player[1];
 		players[0] = new Player(level.startX, level.startY);
 		projectiles = new ArrayList<Projectile>();
+		itemDrops = new ArrayList<ItemDrop>();
 		visible = new boolean[level.height][level.width];
 		visited = new boolean[level.height][level.width];
 		updateCamera();
@@ -48,6 +53,7 @@ public class Map extends Scene {
 			updateCamera();
 			updateVisibility();
 		}
+		updateTraps(dt);
 		updateProjectiles(dt);
 	}
 	
@@ -91,8 +97,8 @@ public class Map extends Scene {
 	
 	private void updateVisibility(Player player) {
 		int r = player.getSightRadius() * Level.TILE_SIZE;
-		int px = (int)player.getX();
-		int py = (int)player.getY();
+		int px = (int)player.getPixelX();
+		int py = (int)player.getPixelY();
 		for (int theta = 0; theta < 360; theta ++) {
 			double a = Math.PI * theta / 180;
 			raycastAngle(px, py, a + 0.0 * Math.PI, r);
@@ -106,7 +112,7 @@ public class Map extends Scene {
 			int i = x / Level.TILE_SIZE;
 			int j = y / Level.TILE_SIZE;
 			if (isTileOpaque(i, j)) {
-				if (isInMap(i, j)) visible[j][i] = true;
+				if (isInMap(i, j)) visited[j][i] = true;
 				return;
 			} else {
 				visible[j][i] = true;
@@ -118,8 +124,8 @@ public class Map extends Scene {
 		double x = 0, y = 0;
 		double minX = -1, minY = -1, maxX = -1, maxY = -1;
 		for (Player p : players) {
-			x += p.getX();
-			y += p.getY();
+			x += p.getPixelX();
+			y += p.getPixelY();
 			if (minX == -1 || x < minX) minX = x;
 			if (minY == -1 || y < minY) minY = y;
 			if (maxX == -1 || x > maxX) maxX = x;
@@ -134,7 +140,7 @@ public class Map extends Scene {
 	}
 	
 	private void updateCameraZoom(double xDifference, double yDifference) {
-		// TODO: Do this when multiplayer works.
+		// TODO: Do this when multiplayer works. @multiplayer
 		getMinZoom();
 	}
 	
@@ -142,6 +148,31 @@ public class Map extends Scene {
 		double ratioWidth  = (double)(level.width  * Level.TILE_SIZE) / jog.Window.getWidth();
 		double ratioHeight = (double)(level.height * Level.TILE_SIZE) / jog.Window.getHeight();
 		return Math.max(ratioWidth, ratioHeight);
+	}
+	
+	private void updateTraps(double dt) {
+		for (Trap t : level.traps) {
+			t.update(dt, this);
+		}
+	}
+	
+	public ObjectWithMass[] getObjectsWithMass() {
+		ArrayList<ObjectWithMass> objs = new ArrayList<ObjectWithMass>();
+		for (Enemy e : level.enemies) {
+			objs.add(e);
+		}
+		for (Player p : players) {
+			objs.add(p);
+		}
+		for (Projectile p : projectiles) {
+			if (p.getClass() == Boulder.class) {
+				objs.add((Boulder)p);
+			}
+		}
+		for (ItemDrop d : itemDrops) {
+			objs.add(d);
+		}
+		return objs.toArray(new ObjectWithMass[objs.size()]);
 	}
 	
 	@Override
@@ -158,7 +189,7 @@ public class Map extends Scene {
 					jog.Graphics.setColour(level.tiles[j][i].color);
 					jog.Graphics.rectangle(true, i * Level.TILE_SIZE, j * Level.TILE_SIZE, Level.TILE_SIZE, Level.TILE_SIZE);
 				}
-				if (!isVisible(i, j)) {
+				if (!isTileVisible(i, j) && (!level.getTile(i, j).isWall() && level.getTile(i, j) != Level.Tile.FAKE_WALL1 || !hasVisited(i, j))) {
 					jog.Graphics.setColour(0, 0, 32, 96);
 					jog.Graphics.rectangle(true, i * Level.TILE_SIZE, j * Level.TILE_SIZE, Level.TILE_SIZE, Level.TILE_SIZE);
 				}
@@ -199,13 +230,18 @@ public class Map extends Scene {
 		return !isTilePassable(i, j);
 	}
 	
-	public boolean isVisible(int i, int j) {
+	public boolean isPixelVisible(double x, double y) {
+		int i = (int)(x / Level.TILE_SIZE);
+		int j = (int)(y / Level.TILE_SIZE);
+		return isTileVisible(i, j);
+	}
+	
+	public boolean isTileVisible(int i, int j) {
 		return visible[j][i];
 	}
 	
 	public boolean hasVisited(int i, int j) {
-		return true;
-//		return visited[j][i];
+		return visited[j][i];
 	}
 	
 	public void addProjectile(Projectile p) {
@@ -225,7 +261,9 @@ public class Map extends Scene {
 
 	private void drawProjectiles() {
 		for (Projectile p : projectiles) {
-			p.draw();
+			if (hasVisited(p.getMapX(), p.getMapY())) {
+				p.draw();
+			}
 		}
 	}
 	
