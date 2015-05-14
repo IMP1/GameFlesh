@@ -1,14 +1,12 @@
 package cls;
 
-public abstract class Projectile {
+public abstract class Projectile extends ObjectWithMass {
 	
-	protected double x;
-	protected double y;
 	protected boolean finished;
 
 	public Projectile(double x, double y) {
-		this.x = x;
-		this.y = y;
+		this.pixelX = x;
+		this.pixelY = y;
 		finished = false;
 	}
 

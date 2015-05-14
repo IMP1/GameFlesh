@@ -12,16 +12,17 @@ public class BoulderTrap extends Trap {
 		
 		private Boulder(int x, int y, int dx, int dy) {
 			super((x + 0.5) * cls.Level.TILE_SIZE, (y + 0.5) * cls.Level.TILE_SIZE);
+			this.mass = 100;
 			this.dx = dx * SPEED;
 			this.dy = dy * SPEED;
 		}
 		
 		public void update(double dt, scn.Map scene) {
-			double newX = x + (dx * dt);
-			double newY = y + (dy * dt);
+			double newX = pixelX + (dx * dt);
+			double newY = pixelY + (dy * dt);
 			if (scene.isPixelPassable(newX, newY)) {
-				x = newX;
-				y = newY;
+				pixelX = newX;
+				pixelY = newY;
 			} else {
 				finished = true;
 			}
@@ -29,7 +30,9 @@ public class BoulderTrap extends Trap {
 		
 		public void draw() {
 			jog.Graphics.setColour(255, 128, 128);
-			jog.Graphics.circle(true, x, y, 8);
+			if (((scn.Map)scn.SceneManager.scene()).isPixelVisible(pixelX, pixelY)) {
+				jog.Graphics.circle(true, pixelX, pixelY, 8);
+			}
 		}
 		
 	}
@@ -47,7 +50,7 @@ public class BoulderTrap extends Trap {
 	public void draw() {
 		super.draw();
 		if (((scn.Map)scn.SceneManager.scene()).hasVisited(boulderX, boulderY)) {
-			drawBoulderEnterPoint(); // TODO: remove once boulders are spawning into view.
+			drawBoulderEnterPoint();
 		}
 	}
 	
@@ -61,8 +64,8 @@ public class BoulderTrap extends Trap {
 	@Override
 	public boolean isAt(int i, int j) {
 		return (
-			i >= Math.min(x, boulderX) && i <= Math.max(x,  boulderX) &&
-			j >= Math.min(y, boulderY) && j <= Math.max(y,  boulderY)
+			i >= Math.min(triggerX, boulderX) && i <= Math.max(triggerX,  boulderX) &&
+			j >= Math.min(triggerY, boulderY) && j <= Math.max(triggerY,  boulderY)
 		);
 	}
 
@@ -74,10 +77,10 @@ public class BoulderTrap extends Trap {
 		int oy = boulderY;
 		int dx = 0;
 		int dy = 0;
-		if (x < boulderX) dx = -1;
-		if (x > boulderX) dx = 1;
-		if (y < boulderY) dy = -1;
-		if (y > boulderY) dy = 1;
+		if (triggerX < boulderX) dx = -1;
+		if (triggerX > boulderX) dx = 1;
+		if (triggerY < boulderY) dy = -1;
+		if (triggerY > boulderY) dy = 1;
 		if (scene.isTilePassable(ox - dx, oy - dy)) {
 			ox -= dx;
 			oy -= dy;
