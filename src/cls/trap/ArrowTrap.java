@@ -1,14 +1,65 @@
 package cls.trap;
 
+import cls.Projectile;
+
 public class ArrowTrap extends Trap {
+	
+	public final class Arrow extends Projectile {
+		
+		public final static int SPEED = 512;
+		
+		private double dx, dy;
+		
+		private Arrow(int x, int y, int dx, int dy) {
+			super((x + 0.5) * cls.Level.TILE_SIZE, (y + 0.5) * cls.Level.TILE_SIZE);
+			this.mass = 600;
+			this.dx = dx * SPEED;
+			this.dy = dy * SPEED;
+		}
+		
+		public void update(double dt, scn.Map scene) {
+			double newX = pixelX + (dx * dt);
+			double newY = pixelY + (dy * dt);
+			int i = (int)newX / cls.Level.TILE_SIZE;
+			int j = (int)newY / cls.Level.TILE_SIZE;
+			if (scene.isPixelPassable(newX, newY) || (i == ballistaX && j == ballistaY)) {
+				pixelX = newX;
+				pixelY = newY;
+			} else {
+				finished = true;
+			}
+		}
+		
+		public void draw() {
+			jog.Graphics.setColour(255, 255, 255);
+			if (((scn.Map)scn.SceneManager.scene()).isPixelVisible(pixelX, pixelY)) {
+				jog.Graphics.circle(true, pixelX, pixelY, 8);
+			}
+		}
+		
+	}
+	
+	public static final double COOLDOWN = 1.0;
 	
 	public final int ballistaX;
 	public final int ballistaY;
+	public int arrowsRemaining;
+	public double cooldownTimer;
 
 	public ArrowTrap(int x, int y, int ballistaX, int ballistaY) {
 		super(x, y, "Arrow Trap");
 		this.ballistaX = ballistaX;
 		this.ballistaY = ballistaY;
+		arrowsRemaining = 5;
+		cooldownTimer = 0;
+	}
+	
+	@Override
+	public void update(double dt, scn.Map scene) {
+		super.update(dt, scene);
+		if (cooldownTimer > 0) {
+			cooldownTimer = Math.max(0, cooldownTimer - dt); 
+		}
 	}
 	
 	@Override
@@ -44,7 +95,20 @@ public class ArrowTrap extends Trap {
 
 	@Override
 	public void trigger(scn.Map scene) {
-		
+		if (arrowsRemaining <= 0) return;
+		if (cooldownTimer > 0) return;
+		triggered = true;
+		cooldownTimer = COOLDOWN;
+		arrowsRemaining --;
+		int ox = ballistaX;
+		int oy = ballistaY;
+		int dx = 0;
+		int dy = 0;
+		if (triggerX < ballistaX) dx = -1;
+		if (triggerX > ballistaX) dx = 1;
+		if (triggerY < ballistaY) dy = -1;
+		if (triggerY > ballistaY) dy = 1;
+		scene.addProjectile(new Arrow(ox, oy, dx, dy));
 	}
 	
 }
