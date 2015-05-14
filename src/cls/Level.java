@@ -10,21 +10,20 @@ public class Level {
 	
 	public enum Tile {
 		NONE(0, 0, 0),
-		FLOOR1(128, 128, 128),
-		FLOOR2(128, 196, 128),
-		FLOOR3(196, 128, 128),
-		FLOOR4(128, 128, 196),
-		FLOOR5(128, 140, 140), // TEMP used for walls -> floors
-		FLOOR6(160, 128, 160), // TEMP used for walls -> floors
+		FLOOR1(128, 128, 128), // Normal Floor
+		FLOOR2(128, run.Main.DEBUGGING ? 160 : 128, 128), // Starting Room
+		FLOOR3(run.Main.DEBUGGING ? 160 : 128, 128, 128), // Ending Room
+		FLOOR4(128, 128, run.Main.DEBUGGING ? 160 : 128), // Boss Room
+		
 		WALL1(64, 64, 64),
-		FAKE_WALL1(64, 64, 128),
+		FAKE_WALL1(64, 64, run.Main.DEBUGGING ? 128 : 64),
 		;
 		public final Color color;
 		Tile(int r, int g, int b) {
 			color = new Color(r, g, b);
 		}
 		public boolean isFloor() {
-			return (this == FLOOR1 || this == FLOOR2 || this == FLOOR3 || this == FLOOR4 || this == FLOOR5 || this == FLOOR6);
+			return (this == FLOOR1 || this == FLOOR2 || this == FLOOR3 || this == FLOOR4);
 		}
 		public boolean isWall() {
 			return (this == WALL1);

@@ -254,10 +254,10 @@ public class LevelGenerator {
 					getTile(i + 1, j - 1).isFloor() && getTile(i + 1, j + 2).isFloor()
 				);
 				if (wallSquare && (passageHorizontal || passageVertical)) {
-					setTile(i, j, Tile.FLOOR5);
-					setTile(i + 1, j, Tile.FLOOR5);
-					setTile(i, j + 1, Tile.FLOOR5);
-					setTile(i + 1, j + 1, Tile.FLOOR5);
+					setTile(i, j, Tile.FLOOR1);
+					setTile(i + 1, j, Tile.FLOOR1);
+					setTile(i, j + 1, Tile.FLOOR1);
+					setTile(i + 1, j + 1, Tile.FLOOR1);
 				}
 			}
 		}
@@ -274,8 +274,8 @@ public class LevelGenerator {
 					)
 				);
 				if (passageHorizontal) {
-					setTile(i, j, Tile.FLOOR5);
-					setTile(i + 1, j, Tile.FLOOR5);
+					setTile(i, j, Tile.FLOOR1);
+					setTile(i + 1, j, Tile.FLOOR1);
 				}
 			}
 		}
@@ -292,8 +292,8 @@ public class LevelGenerator {
 					)
 				);
 				if (passageVertical) {
-					setTile(i, j, Tile.FLOOR5);
-					setTile(i, j + 1, Tile.FLOOR5);
+					setTile(i, j, Tile.FLOOR1);
+					setTile(i, j + 1, Tile.FLOOR1);
 				}
 			}
 		}
@@ -371,7 +371,7 @@ public class LevelGenerator {
 	private static void setPassageRectangle(int x, int y, int width, int height) {
 		for (int j = y; j < y + height; j ++) {
 			for (int i = x; i < x + width; i ++) {
-				setTile(i, j, Tile.FLOOR5);
+				setTile(i, j, Tile.FLOOR1);
 			}
 		}
 	}
@@ -655,7 +655,7 @@ public class LevelGenerator {
 	private static boolean validEnemyPlacement(int x, int y) {
 		if (!getTile(x, y).isFloor()) return false;
 		for (Enemy e : enemies) {
-			if (e.isAt(x * Level.TILE_SIZE, y * Level.TILE_SIZE, 16)) {
+			if (e.isAtPixel(x * Level.TILE_SIZE, y * Level.TILE_SIZE, 16)) {
 				return false;
 			}
 		}
