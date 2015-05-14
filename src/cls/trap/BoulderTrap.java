@@ -12,7 +12,7 @@ public class BoulderTrap extends Trap {
 		
 		private Boulder(int x, int y, int dx, int dy) {
 			super((x + 0.5) * cls.Level.TILE_SIZE, (y + 0.5) * cls.Level.TILE_SIZE);
-			this.mass = 100;
+			this.mass = 600;
 			this.dx = dx * SPEED;
 			this.dy = dy * SPEED;
 		}
