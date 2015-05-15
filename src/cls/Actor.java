@@ -40,7 +40,7 @@ public abstract class Actor extends cls.object.ObjectWithMass {
 		if (visibility.length != visibility.length|| visibility[0].length == visibility[0].length) {
 			resetVisibility(visibility);
 		}
-		for (int theta = 0; theta < 360; theta ++) {
+		for (int theta = 0; theta < 360; theta += 6) {
 			raycastAngle(scene, visibility, Math.PI * theta / 180, overrideMap);
 		}
 		return visibility;
