@@ -63,8 +63,6 @@ public class Title extends Scene {
 			jog.Graphics.printCentred(LevelGenerator.getMessage(), 0, 128, jog.Window.getWidth() / 2);
 			jog.Graphics.pop();
 		}
-		// Draw debug
-		jog.Graphics.print(String.format("%.2f", timer), 0, 0);
 	}
 
 	@Override
