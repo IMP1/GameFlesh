@@ -4,23 +4,20 @@ import java.util.HashMap;
 
 import scn.SceneManager;
 
-public class Player extends ObjectWithMass {
+public class Player extends cls.Actor {
 	
 	private static int playerCount = 0;
 	
-	public final String name;
-	
 	private int playerID;
-	
 	private HashMap<Equipment.Slot, Equipment> equipment;
 
 	public Player(int x, int y) {
+		super("Player " + (playerCount + 1));
 		playerID = playerCount;
 		Player.playerCount ++;
 		mass = 70;
 		pixelX = (int)((x + 0.5) * Level.TILE_SIZE);
 		pixelY = (int)((y + 0.5) * Level.TILE_SIZE);
-		name = "Player " + (playerID + 1);
 		equipment = new HashMap<Equipment.Slot, Equipment>();
 	}
 	
@@ -42,9 +39,5 @@ public class Player extends ObjectWithMass {
 		jog.Graphics.circle(true, pixelX, pixelY, 8);
 	}
 
-	public int getSightRadius() {
-		return 6; // (In tiles)
-	}
-	
 }
 
