@@ -1,5 +1,6 @@
 package cls;
 
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
 import scn.SceneManager;
@@ -31,6 +32,28 @@ public class Player extends cls.Actor {
 		if (((scn.Map)SceneManager.scene()).isPixelPassable(newX, newY)) {
 			pixelX = newX;
 			pixelY = newY;
+		}
+	}
+	
+	public void update(double dt) {
+		if (playerID == 0) {
+			double dx = 0;
+			double dy = 0;
+			if (jog.Input.isKeyDown(KeyEvent.VK_W)) {
+				dy -= dt * 128;
+			}
+			if (jog.Input.isKeyDown(KeyEvent.VK_A)) {
+				dx -= dt * 128;
+			}
+			if (jog.Input.isKeyDown(KeyEvent.VK_S)) {
+				dy += dt * 128;
+			}
+			if (jog.Input.isKeyDown(KeyEvent.VK_D)) {
+				dx += dt * 128;
+			}
+			if (dx != 0 || dy != 0) {
+				move(dx, dy);
+			}
 		}
 	}
 	

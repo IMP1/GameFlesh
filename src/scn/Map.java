@@ -49,42 +49,31 @@ public class Map extends Scene {
 				visible[j][i] = false;
 			}
 		}
-		for (Player p : players) {
-			updatePlayerMovement(p, dt);
-			p.updateVisibilty(this, visible, true);
-		}
+		updatePlayers(dt);
 		for (int j = 0; j < visible.length; j ++) {
 			for (int i = 0; i < visible[j].length; i ++) {
 				if (visible[j][i]) visited[j][i] = true;
 			}
 		}
+		updateEnemies(dt);
 		updateCamera();
 		updateTraps(dt);
 		updateProjectiles(dt);
 	}
 	
-	private boolean updatePlayerMovement(Player p, double dt) {
-		double dx = 0;
-		double dy = 0;
-		if (jog.Input.isKeyDown(KeyEvent.VK_W)) {
-			dy -= dt * 128;
+	private void updatePlayers(double dt) {
+		for (Player p : players) {
+			p.update(dt);
+			p.updateVisibilty(this, visible, true);
 		}
-		if (jog.Input.isKeyDown(KeyEvent.VK_A)) {
-			dx -= dt * 128;
-		}
-		if (jog.Input.isKeyDown(KeyEvent.VK_S)) {
-			dy += dt * 128;
-		}
-		if (jog.Input.isKeyDown(KeyEvent.VK_D)) {
-			dx += dt * 128;
-		}
-		if (dx != 0 || dy != 0) {
-			p.move(dx, dy);
-			return true;
-		}
-		return false;
 	}
-
+	
+	private void updateEnemies(double dt) {
+//		for (Enemy e : level.enemies) {
+//			e.update(dt);
+//		}
+	}
+	
 	private void updateCamera() {
 		double x = 0, y = 0;
 		double minX = -1, minY = -1, maxX = -1, maxY = -1;
