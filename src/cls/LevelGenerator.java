@@ -495,10 +495,10 @@ public class LevelGenerator {
 			for (int i = 0; i < mapWidth; i ++) {
 				if (isVerticalPassage(i, j, 1) && !isTrapAt(i, j - 1) && !isTrapAt(i, j + 1) && 
 						Math.random() <= likelihood) {
-					traps.add(new SwingingTrap(i, j, SwingingTrap.Direction.VERTICAL));
+					traps.add(new SwingingTrap(i, j, SwingingTrap.Direction.HORIZONTAL));
 				} else if (isHorizontalPassage(i, j, 1) && !isTrapAt(i - 1, j) && !isTrapAt(i + 1, j) &&
 						Math.random() <= likelihood) {
-					traps.add(new SwingingTrap(i, j, SwingingTrap.Direction.HORIZONTAL));
+					traps.add(new SwingingTrap(i, j, SwingingTrap.Direction.VERTICAL));
 				}
 			}
 		}
