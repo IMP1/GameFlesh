@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import lib.Camera;
 
 import cls.Level;
-import cls.ObjectWithMass;
-import cls.ItemDrop;
-import cls.Projectile;
+import cls.object.ObjectWithMass;
+import cls.object.Projectile;
+import cls.object.ItemDrop;
 import cls.trap.BoulderTrap.Boulder;
 import cls.trap.Trap;
 import cls.enemy.Enemy;
@@ -39,20 +39,26 @@ public class Map extends Scene {
 		itemDrops = new ArrayList<ItemDrop>();
 		visible = new boolean[level.height][level.width];
 		visited = new boolean[level.height][level.width];
-		updateCamera();
-		updateVisibility();
+		update(0);
 	}
 
 	@Override
 	public void update(double dt) {
-		boolean movement = false;
+		for (int j = 0; j < visible.length; j ++) {
+			for (int i = 0; i < visible[j].length; i ++) {
+				visible[j][i] = false;
+			}
+		}
 		for (Player p : players) {
-			movement = movement || updatePlayerMovement(p, dt);
+			updatePlayerMovement(p, dt);
+			p.updateVisibilty(this, visible, true);
 		}
-		if (movement) {
-			updateCamera();
-			updateVisibility();
+		for (int j = 0; j < visible.length; j ++) {
+			for (int i = 0; i < visible[j].length; i ++) {
+				if (visible[j][i]) visited[j][i] = true;
+			}
 		}
+		updateCamera();
 		updateTraps(dt);
 		updateProjectiles(dt);
 	}
@@ -79,47 +85,6 @@ public class Map extends Scene {
 		return false;
 	}
 
-	private void updateVisibility() {
-		for (int j = 0; j < visible.length; j ++) {
-			for (int i = 0; i < visible[j].length; i ++) {
-				visible[j][i] = false;
-			}
-		}
-		for (Player p : players) {
-			updateVisibility(p);
-		}
-		for (int j = 0; j < visible.length; j ++) {
-			for (int i = 0; i < visible[j].length; i ++) {
-				if (visible[j][i]) visited[j][i] = true;
-			}
-		}
-	}
-	
-	private void updateVisibility(Player player) {
-		int r = player.getSightRadius() * Level.TILE_SIZE;
-		int px = (int)player.getPixelX();
-		int py = (int)player.getPixelY();
-		for (int theta = 0; theta < 360; theta ++) {
-			double a = Math.PI * theta / 180;
-			raycastAngle(px, py, a + 0.0 * Math.PI, r);
-		}
-	}
-	
-	private void raycastAngle(int ox, int oy, double angle, int maxRadius) {
-		for (int r = 0; r < maxRadius; r ++) {
-			int x = ox + (int)(Math.cos(angle) * r);
-			int y = oy + (int)(Math.sin(angle) * r);
-			int i = x / Level.TILE_SIZE;
-			int j = y / Level.TILE_SIZE;
-			if (isTileOpaque(i, j)) {
-				if (isInMap(i, j)) visited[j][i] = true;
-				return;
-			} else {
-				visible[j][i] = true;
-			}
-		}
-	}
-	
 	private void updateCamera() {
 		double x = 0, y = 0;
 		double minX = -1, minY = -1, maxX = -1, maxY = -1;
@@ -274,9 +239,19 @@ public class Map extends Scene {
 
 	@Override
 	public void keyPressed(int key) {
-		
+		if (key == KeyEvent.VK_BACK_QUOTE) {
+			revealAll();
+		}
 	}
 
+	private void revealAll() {
+		for (int j = 0; j < level.height; j ++) {
+			for (int i = 0; i < level.width; i ++) {
+				visited[j][i] = true;
+			}
+		}
+	}
+	
 	@Override
 	public void keyReleased(int key) {}
 
