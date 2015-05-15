@@ -1,4 +1,4 @@
-package cls;
+package cls.object;
 
 public abstract class ObjectWithMass {
 	
@@ -28,11 +28,11 @@ public abstract class ObjectWithMass {
 	}
 	
 	public int getMapX() {
-		return (int)(pixelX / Level.TILE_SIZE);
+		return (int)(pixelX / cls.Level.TILE_SIZE);
 	}
 	
 	public int getMapY() {
-		return (int)(pixelY / Level.TILE_SIZE);
+		return (int)(pixelY / cls.Level.TILE_SIZE);
 	}	
 	
 }

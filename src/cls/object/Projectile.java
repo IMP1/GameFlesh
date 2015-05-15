@@ -1,12 +1,12 @@
-package cls;
+package cls.object;
 
-public abstract class Projectile extends ObjectWithMass {
+public abstract class Projectile extends cls.object.ObjectWithMass {
 	
 	protected boolean finished;
 
 	public Projectile(double x, double y) {
-		this.pixelX = x;
-		this.pixelY = y;
+		pixelX = x;
+		pixelY = y;
 		finished = false;
 	}
 
