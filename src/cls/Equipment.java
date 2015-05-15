@@ -7,7 +7,7 @@ public class Equipment {
 		NECK,  // amulets, necklaces, etc.
 		CHEST, // robes, armour, etc.
 		LEGS,  // trousers 
-		HANDS, // gloves
+		HANDS, // gloves, claws, etc.
 	}
 	
 	public final String name;

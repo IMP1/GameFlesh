@@ -1,6 +1,6 @@
 package cls.trap;
 
-import cls.Projectile;
+import cls.object.Projectile;
 
 public class ArrowTrap extends Trap {
 	

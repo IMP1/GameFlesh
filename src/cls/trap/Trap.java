@@ -11,17 +11,17 @@ public abstract class Trap {
 	public Trap(int x, int y, String name) {
 		this(x, y, name, 1, Integer.MAX_VALUE);
 	}
-	public Trap(int x, int y, String name, int minTriggerableMass, int maxTriggerableMass) {
-		this.triggerX = x;
-		this.triggerY = y;
-		this.name = name;
-		this.minTriggerableMass = minTriggerableMass;
-		this.maxTriggerableMass = maxTriggerableMass;
-		this.triggered = false;
+	public Trap(int x, int y, String trapName, int minMass, int maxMass) {
+		triggerX = x;
+		triggerY = y;
+		name = trapName;
+		minTriggerableMass = minMass;
+		maxTriggerableMass = maxMass;
+		triggered = false;
 	}
 	
 	public void update(double dt, scn.Map scene) {
-		for (cls.ObjectWithMass obj : scene.getObjectsWithMass()) {
+		for (cls.object.ObjectWithMass obj : scene.getObjectsWithMass()) {
 			if (obj.isAtTile(triggerX, triggerY) && obj.getMass() >= minTriggerableMass && obj.getMass() <= maxTriggerableMass) {
 				trigger(scene);
 			}

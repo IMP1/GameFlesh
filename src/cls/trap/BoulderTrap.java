@@ -1,6 +1,6 @@
 package cls.trap;
 
-import cls.Projectile;
+import cls.object.Projectile;
 
 public class BoulderTrap extends Trap {
 	
@@ -31,7 +31,7 @@ public class BoulderTrap extends Trap {
 		public void draw() {
 			jog.Graphics.setColour(255, 128, 128);
 			if (((scn.Map)scn.SceneManager.scene()).isPixelVisible(pixelX, pixelY)) {
-				jog.Graphics.circle(true, pixelX, pixelY, 8);
+				jog.Graphics.circle(true, pixelX, pixelY, 16);
 			}
 		}
 		
