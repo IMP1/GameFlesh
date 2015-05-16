@@ -134,6 +134,7 @@ public class Map extends Scene {
 		camera.set();
 		drawMap();
 		camera.unset();
+		drawMiniMap();
 	}
 	
 	private void drawMap() {
@@ -164,6 +165,29 @@ public class Map extends Scene {
 			p.draw();
 		}
 		drawProjectiles();
+	}
+	
+	private void drawMiniMap() {
+		int margin = 32;
+		int padding = 8;
+		int w = 3;
+		jog.Graphics.push();
+		jog.Graphics.translate(jog.Window.getWidth() - (level.width * w + margin), margin);
+		jog.Graphics.setColour(32, 32, 32);
+		jog.Graphics.rectangle(true, -padding, -padding, level.width * w + padding * 2, level.height * w + padding * 2);
+		for (int j = 0; j < level.tiles.length; j ++) {
+			for (int i = 0; i < level.tiles[j].length; i ++) {
+				if (hasVisited(i, j)) {
+					jog.Graphics.setColour(level.tiles[j][i].color);
+					jog.Graphics.rectangle(true, i * w, j * w, w, w);
+				}
+			}
+		}
+		jog.Graphics.setColour(255, 255, 255);
+		for (Player p : players) {
+			jog.Graphics.circle(true, w * p.getPixelX() / Level.TILE_SIZE, w * p.getPixelY() / Level.TILE_SIZE, 2);
+		}
+		jog.Graphics.pop();
 	}
 	
 	public boolean isInMap(int i, int j) {
