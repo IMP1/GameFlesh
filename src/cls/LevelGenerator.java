@@ -150,7 +150,11 @@ public class LevelGenerator {
 	}
 	
 	private static Rectangle addRandomRoom(int width, int height) {
-		return addRandomRoom(width, height, Tile.FLOOR1);
+		if (Math.random() < 0.1) {
+			return addRandomRoom(width, height, Tile.WALL1);
+		} else {
+			return addRandomRoom(width, height, Tile.FLOOR1);
+		}
 	}
 	private static Rectangle addRandomRoom(int width, int height, Tile tileType) {
 		int n = (int)(Math.random() * mapWidth * mapHeight);
@@ -313,9 +317,10 @@ public class LevelGenerator {
 	}
 	
 	private static void tryPassage(int x, int y, int dx, int dy) {
-		int passageLength = checkForPassage(x, y, dx, dy);
 		boolean validStart = getTile(x - dx, y - dy).isFloor();
-		if (passageLength > 0 && validStart) {
+		if (!validStart) return;
+		int passageLength = checkForPassage(x, y, dx, dy);
+		if (passageLength > 0) {
 			int width = 1, height = 1;
 			int passageWidth = getPassageWidth(x, y, dx, dy);
 			if (dx != 0) {
