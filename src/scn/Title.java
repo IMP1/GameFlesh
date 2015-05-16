@@ -26,6 +26,9 @@ public class Title extends Scene {
 		backgrounds[1] = new lib.Parallax(new jog.Image("gfx/mountains.png"), 0, 0, 0.1, true, false);
 		backgrounds[2] = new lib.Parallax(new jog.Image("gfx/terrain.png"),   0, 0, 0.2, true, false);
 		currentStage = Stage.INITIAL_SCROLL;
+		if (run.Main.DEBUGGING) {
+			startGame();
+		}
 	}
 
 	@Override
@@ -74,9 +77,13 @@ public class Title extends Scene {
 	@Override
 	public void keyPressed(int key) {
 		if (key == KeyEvent.VK_SPACE) {
-			currentStage = Stage.LOADING_MAP;
-			LevelGenerator.generateMap();
+			startGame();
 		}
+	}
+	
+	private void startGame() {
+		currentStage = Stage.LOADING_MAP;
+		LevelGenerator.generateMap();
 	}
 
 	@Override
