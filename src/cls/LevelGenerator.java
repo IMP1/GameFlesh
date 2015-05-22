@@ -3,6 +3,7 @@ package cls;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
+import cls.object.FakeWall;
 import cls.trap.*;
 import cls.enemy.*;
 import cls.Level.Tile;
@@ -34,6 +35,7 @@ public class LevelGenerator {
 	private static int mapHeight;
 	private static Tile[][] tiles;
 	private static ArrayList<Trap> traps;
+	private static ArrayList<FakeWall> fakeWalls;
 	private static ArrayList<Enemy> enemies;
 	private static int startX;
 	private static int startY;
@@ -66,7 +68,7 @@ public class LevelGenerator {
 		initialise();
 		createLayout();
 		addContent();
-		generatedLevel = new Level(tiles, traps.toArray(new Trap[0]), enemies.toArray(new Enemy[0]), startX, startY, endX, endY);
+		generatedLevel = new Level(tiles, traps.toArray(new Trap[traps.size()]), fakeWalls, enemies, startX, startY, endX, endY);
 		isFinished = true;
 	}
 	
@@ -80,6 +82,7 @@ public class LevelGenerator {
 			}
 		}
 		traps = new ArrayList<Trap>();
+		fakeWalls = new ArrayList<FakeWall>();
 		enemies = new ArrayList<Enemy>();
 	}
 	
@@ -679,6 +682,9 @@ public class LevelGenerator {
 		if (isExit(x, y)) return;
 		if (y >= 0 && y < mapHeight && x >= 0 && x < mapWidth) {
 			if (overwrite || tiles[y][x] == Tile.NONE) {
+				if (type == Tile.FAKE_WALL1) {
+					fakeWalls.add(new FakeWall(x, y));
+				}
 				tiles[y][x] = type;
 			}
 		}

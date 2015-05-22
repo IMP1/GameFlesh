@@ -1,7 +1,10 @@
 package cls;
 
 import java.awt.Color;
+import java.util.ArrayList;
+
 import cls.enemy.Enemy;
+import cls.object.FakeWall;
 import cls.trap.Trap;
 
 public class Level {
@@ -33,15 +36,17 @@ public class Level {
 	public final int width;
 	public final int height;
 	public final Tile[][] tiles;
-	public final Enemy[] enemies;
+	public final ArrayList<Enemy> enemies;
 	public final Trap[] traps;
+	public final ArrayList<FakeWall> fakeWalls;
 	public final int startX, startY;
 	public final int endX, endY;
 	
-	Level(Tile[][] tiles, Trap[] traps, Enemy[] enemies, int startX, int startY, int endX, int endY) {
+	Level(Tile[][] tiles, Trap[] traps, ArrayList<FakeWall> fakeWalls, ArrayList<Enemy> enemies, int startX, int startY, int endX, int endY) {
 		this.tiles = tiles;
 		this.traps = traps;
 		this.enemies = enemies;
+		this.fakeWalls = fakeWalls;
 		this.startX = startX;
 		this.startY = startY;
 		this.endX = endX;
