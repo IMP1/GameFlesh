@@ -1,5 +1,6 @@
 package cls.trap;
 
+import cls.object.DestroyableObject;
 import cls.object.Projectile;
 
 public class BoulderTrap extends Trap {
@@ -9,16 +10,21 @@ public class BoulderTrap extends Trap {
 		public final static int SPEED = 256;
 		
 		private Boulder(int x, int y, int dx, int dy) {
-			super((x + 0.5) * cls.Level.TILE_SIZE, (y + 0.5) * cls.Level.TILE_SIZE);
+			super((x + 0.5) * cls.Level.TILE_SIZE, (y + 0.5) * cls.Level.TILE_SIZE, 16, 600, 9999);
 			this.mass = 600;
 			vx = dx * SPEED;
 			vy = dy * SPEED;
 		}
 		
+		@Override
+		public void hit(DestroyableObject obj) {
+			obj.damage(maxDamage);
+		}
+		
 		public void draw() {
 			jog.Graphics.setColour(255, 128, 128);
 			if (((scn.Map)scn.SceneManager.scene()).isPixelVisible(pixelX, pixelY)) {
-				jog.Graphics.circle(true, pixelX, pixelY, 16);
+				jog.Graphics.circle(true, pixelX, pixelY, radius);
 			}
 		}
 		

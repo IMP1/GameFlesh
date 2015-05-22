@@ -9,8 +9,7 @@ public class ArrowTrap extends Trap {
 		public final static int SPEED = 512;
 		
 		private Arrow(int x, int y, int dx, int dy) {
-			super((x + 0.5) * cls.Level.TILE_SIZE, (y + 0.5) * cls.Level.TILE_SIZE);
-			this.mass = 600;
+			super((x + 0.5) * cls.Level.TILE_SIZE, (y + 0.5) * cls.Level.TILE_SIZE, 4, 2, 10);
 			vx = dx * SPEED;
 			vy = dy * SPEED;
 		}
@@ -19,6 +18,7 @@ public class ArrowTrap extends Trap {
 			int i = (int)x / cls.Level.TILE_SIZE;
 			int j = (int)y / cls.Level.TILE_SIZE;
 			if (!(scene.isPixelPassable(x, y) || (i == ballistaX && j == ballistaY))) return false;
+			if (scene.getObjectAt(x, y, radius) != null) return false;
 			return true;
 		}
 		

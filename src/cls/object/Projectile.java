@@ -7,13 +7,12 @@ public abstract class Projectile extends cls.object.ObjectWithMass {
 	protected double vy;
 	protected int maxDamage;
 
-	public Projectile(double x, double y) {
-		pixelX = x;
-		pixelY = y;
+	public Projectile(double x, double y, int radius, int mass, int damage) {
+		super(x, y, radius, mass);
 		finished = false;
 		vx = 0;
 		vy = 0;
-		maxDamage = 10;
+		maxDamage = damage;
 	}
 
 	public boolean isFinished() {
@@ -21,7 +20,9 @@ public abstract class Projectile extends cls.object.ObjectWithMass {
 	}
 	
 	protected boolean canMoveThrough(scn.Map scene, double x, double y) {
-		return scene.isPixelPassable(x, y);
+		if (!scene.isPixelPassable(x, y)) return false; 
+		if (scene.getObjectAt(x, y, radius) != null) return false;
+		return true;
 	}
 	
 	/**
@@ -32,16 +33,7 @@ public abstract class Projectile extends cls.object.ObjectWithMass {
 		obj.damage(maxDamage);
 		destroy();
 	}
-	
-	/**
-	 * Hit an actor.
-	 * @param actor the actor hit.
-	 */
-	protected void hit(cls.Actor actor) {
-		actor.damage(maxDamage);
-		hit();
-	}
-	
+
 	/**
 	 * Hit something static, like a wall.
 	 */
@@ -60,7 +52,12 @@ public abstract class Projectile extends cls.object.ObjectWithMass {
 			pixelX = newX;
 			pixelY = newY;
 		} else {
-			hit();
+			DestroyableObject obj = scene.getObjectAt(newX, newY, radius);
+			if (obj == null) {
+				hit();
+			} else {
+				hit(obj);
+			}
 		}
 	}
 	
