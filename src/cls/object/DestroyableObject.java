@@ -1,6 +1,6 @@
 package cls.object;
 
-public abstract class DestroyableObject {
+public abstract class DestroyableObject extends ObjectWithMass {
 
 	protected int maxHealth;
 	protected int currentHealth;
