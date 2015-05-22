@@ -8,26 +8,18 @@ public class ArrowTrap extends Trap {
 		
 		public final static int SPEED = 512;
 		
-		private double dx, dy;
-		
 		private Arrow(int x, int y, int dx, int dy) {
 			super((x + 0.5) * cls.Level.TILE_SIZE, (y + 0.5) * cls.Level.TILE_SIZE);
 			this.mass = 600;
-			this.dx = dx * SPEED;
-			this.dy = dy * SPEED;
+			vx = dx * SPEED;
+			vy = dy * SPEED;
 		}
 		
-		public void update(double dt, scn.Map scene) {
-			double newX = pixelX + (dx * dt);
-			double newY = pixelY + (dy * dt);
-			int i = (int)newX / cls.Level.TILE_SIZE;
-			int j = (int)newY / cls.Level.TILE_SIZE;
-			if (scene.isPixelPassable(newX, newY) || (i == ballistaX && j == ballistaY)) {
-				pixelX = newX;
-				pixelY = newY;
-			} else {
-				finished = true;
-			}
+		protected boolean canMoveThrough(scn.Map scene, double x, double y) {
+			int i = (int)x / cls.Level.TILE_SIZE;
+			int j = (int)y / cls.Level.TILE_SIZE;
+			if (!(scene.isPixelPassable(x, y) || (i == ballistaX && j == ballistaY))) return false;
+			return true;
 		}
 		
 		public void draw() {

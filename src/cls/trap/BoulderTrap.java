@@ -8,24 +8,11 @@ public class BoulderTrap extends Trap {
 		
 		public final static int SPEED = 256;
 		
-		private double dx, dy;
-		
 		private Boulder(int x, int y, int dx, int dy) {
 			super((x + 0.5) * cls.Level.TILE_SIZE, (y + 0.5) * cls.Level.TILE_SIZE);
 			this.mass = 600;
-			this.dx = dx * SPEED;
-			this.dy = dy * SPEED;
-		}
-		
-		public void update(double dt, scn.Map scene) {
-			double newX = pixelX + (dx * dt);
-			double newY = pixelY + (dy * dt);
-			if (scene.isPixelPassable(newX, newY)) {
-				pixelX = newX;
-				pixelY = newY;
-			} else {
-				finished = true;
-			}
+			vx = dx * SPEED;
+			vy = dy * SPEED;
 		}
 		
 		public void draw() {
