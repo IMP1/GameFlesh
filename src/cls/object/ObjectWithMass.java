@@ -2,11 +2,21 @@ package cls.object;
 
 public abstract class ObjectWithMass {
 	
+	public ObjectWithMass(double x, double y, int r, int m) {
+		pixelX = x;
+		pixelY = y;
+		radius = r;
+		mass = m;
+	}
+	
 	protected int mass;
+	protected int radius;
 	protected double pixelX;
 	protected double pixelY;
 	
-	public int getMass() { return mass; }
+	public int getMass() { 
+		return mass;
+	}
 	
 	public boolean isAtTile(int i, int j) {
 		return i == getMapX() && j == getMapY();
@@ -15,7 +25,7 @@ public abstract class ObjectWithMass {
 	public boolean isAtPixel(double x, double y, int leeway) {
 		double dx = getPixelX() - x;
 		double dy = getPixelY() - y;
-		int dr = leeway;
+		int dr = leeway + radius;
 		return dx * dx + dy * dy < dr * dr;
 	}
 

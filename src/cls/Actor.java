@@ -1,35 +1,14 @@
 package cls;
 
-public abstract class Actor extends cls.object.ObjectWithMass {
+public abstract class Actor extends cls.object.DestroyableObject {
 	
 	public final String name;
 	
-	protected int maxHealth;
-	protected int currentHealth;
-	protected boolean incapacitated;
-	
 	private boolean[][] visibility;
 	
-	public Actor(String name) {
+	public Actor(String name, double x, double y, int radius, int mass, int health) {
+		super(x, y, radius, mass, health);
 		this.name = name;
-	}
-
-	/**
-	 * Reduces the objects health.
-	 * @param damage the amount of damage the attacker is giving out.
-	 * @return the amount of damage that was actually dealt.
-	 */
-	public int damage(int damage) {
-		currentHealth = currentHealth - damage;
-		if (currentHealth <= 0) {
-			incapacitated = true;
-			currentHealth = 0;
-		}
-		return damage;
-	}
-	
-	public boolean isDestroyed() {
-		return incapacitated;
 	}
 	
 	public int getSightRadius() {

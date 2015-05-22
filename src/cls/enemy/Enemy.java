@@ -2,11 +2,8 @@ package cls.enemy;
 
 public abstract class Enemy extends cls.Actor {
 
-	public Enemy(int x, int y, String name) {
-		super(name);
-		mass = 70;
-		pixelX = (int)((x + Math.random()) * cls.Level.TILE_SIZE);
-		pixelY = (int)((y + Math.random()) * cls.Level.TILE_SIZE);
+	public Enemy(String name, int x, int y, int radius, int mass, int health) {
+		super(name, x, y, radius, mass, health);
 	}
 
 	public void draw() {
