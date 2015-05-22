@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import lib.Camera;
 
 import cls.Level;
+import cls.Level.Tile;
+import cls.object.DestroyableObject;
+import cls.object.FakeWall;
 import cls.object.ObjectWithMass;
 import cls.object.Projectile;
 import cls.object.ItemDrop;
@@ -59,6 +62,7 @@ public class Map extends Scene {
 		updateCamera();
 		updateTraps(dt);
 		updateProjectiles(dt);
+		removeTheDead();
 	}
 	
 	private void updatePlayers(double dt) {
@@ -110,6 +114,24 @@ public class Map extends Scene {
 		}
 	}
 	
+	private void removeTheDead() {
+		for (int i = projectiles.size() - 1; i >= 0; i --) {
+			if (projectiles.get(i).isFinished()) {
+				projectiles.remove(i);
+			}
+		}
+		for (int i = level.fakeWalls.size() - 1; i >= 0; i --) {
+			if (level.fakeWalls.get(i).isDestroyed()) {
+				level.fakeWalls.remove(i);
+			}
+		}
+		for (int i = level.enemies.size() - 1; i >= 0; i --) {
+			if (level.enemies.get(i).isDestroyed()) {
+				level.enemies.remove(i);
+			}
+		}
+	}
+	
 	public ObjectWithMass[] getObjectsWithMass() {
 		ArrayList<ObjectWithMass> objs = new ArrayList<ObjectWithMass>();
 		for (Enemy e : level.enemies) {
@@ -127,6 +149,20 @@ public class Map extends Scene {
 			objs.add(d);
 		}
 		return objs.toArray(new ObjectWithMass[objs.size()]);
+	}
+
+	public DestroyableObject getObjectAt(double x, double y, int leeway) {
+		if (!isInMap((int)(x / Level.TILE_SIZE), (int)(y / Level.TILE_SIZE))) return null;
+		for (Player p : players) {
+			if (p.isAtPixel(x, y, leeway) && !p.isDestroyed()) return p;
+		}
+		for (Enemy e : level.enemies) {
+			if (e.isAtPixel(x, y, leeway) && !e.isDestroyed()) return e;
+		}
+		for (FakeWall w : level.fakeWalls) {
+			if (w.isAtPixel(x, y, leeway)) return w;
+		}
+		return null;
 	}
 	
 	@Override
@@ -190,6 +226,11 @@ public class Map extends Scene {
 		jog.Graphics.pop();
 	}
 	
+	public void destroyFakeWall(int i, int j) {
+		level.tiles[j][i] = Tile.FLOOR1;
+		// Propagate that shizzle along.
+	}
+	
 	public boolean isInMap(int i, int j) {
 		return i >= 0 && i < level.width && j >= 0 && j < level.height;
 	}
@@ -229,11 +270,6 @@ public class Map extends Scene {
 	private void updateProjectiles(double dt) {
 		for (Projectile p : projectiles) {
 			p.update(dt, this);
-		}
-		for (int i = projectiles.size() - 1; i >= 0; i --) {
-			if (projectiles.get(i).isFinished()) {
-				projectiles.remove(i);
-			}
 		}
 	}
 
