@@ -13,17 +13,18 @@ public abstract class DestroyableObject extends ObjectWithMass {
 		destroyed = false;
 	}
 	
-	/**
-	 * Reduces the objects health.
-	 * @param damage the amount of damage the attacker is giving out.
-	 * @return the amount of damage that was actually dealt.
-	 */
-	public int damage(int damage) {
-		currentHealth = currentHealth - damage;
+	public void damage(int damage) {
+		changeHealth(-damage);
+	}
+	
+	protected void changeHealth(int damage) {
+		currentHealth = currentHealth + damage;
 		if (currentHealth <= 0) {
 			destroy();
 		}
-		return damage;
+		if (currentHealth > maxHealth) {
+			currentHealth = maxHealth;
+		}
 	}
 	
 	public boolean isDestroyed() {

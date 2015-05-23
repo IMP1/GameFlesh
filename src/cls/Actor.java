@@ -59,4 +59,11 @@ public abstract class Actor extends cls.object.DestroyableObject {
 		return false;
 	}
 	
+	public void heal(int healing, boolean revive) {
+		if (isDestroyed() && revive && healing > 0) {
+			destroyed = false;
+		}	
+		changeHealth(healing);
+	}
+	
 }
