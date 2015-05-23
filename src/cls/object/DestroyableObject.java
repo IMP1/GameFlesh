@@ -36,8 +36,10 @@ public abstract class DestroyableObject extends ObjectWithMass {
 	}
 	
 	public static java.awt.Color getHealthColor(double health) {
-		int r = (int)(255 * (1 - health));
-		int g = (int)(255 * health);
+		int r = (int)(255 * 2 * (1 - health));
+		int g = (int)(255 * 2 * health);
+		if (r > 255) r = 255;
+		if (g > 255) g = 255;
 		return new java.awt.Color(r, g, 0);
 	}
 	
