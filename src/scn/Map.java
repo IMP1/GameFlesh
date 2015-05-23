@@ -291,6 +291,11 @@ public class Map extends Scene {
 		if (key == KeyEvent.VK_BACK_QUOTE) {
 			revealAll();
 		}
+		if (key == KeyEvent.VK_BACK_SPACE) {
+			for (Player p : players) {
+				p.heal(100, true);
+			}
+		}
 	}
 
 	private void revealAll() {
