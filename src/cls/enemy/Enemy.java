@@ -11,7 +11,7 @@ public abstract class Enemy extends cls.Actor {
 		int j = (int)(pixelY / cls.Level.TILE_SIZE);
 		if (((scn.Map)scn.SceneManager.scene()).isTileVisible(i, j)) {
 			jog.Graphics.setColour(256, 256, 256);
-			jog.Graphics.circle(true, pixelX, pixelY, 4);
+			jog.Graphics.circle(true, pixelX, pixelY, radius);
 			jog.Graphics.print("!", pixelX + 4, pixelY - 16);
 		}
 	}
