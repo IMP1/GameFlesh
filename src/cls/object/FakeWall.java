@@ -19,5 +19,10 @@ public class FakeWall extends DestroyableObject {
 		super.destroy();
 		((scn.Map)scn.SceneManager.scene()).destroyFakeWall(mapX, mapY);
 	}
+	
+	@Override
+	public String toString() {
+		return "Fake Wall (" + mapX + ", " + mapY + ")";
+	}
 
 }
