@@ -1,9 +1,14 @@
 package cls.enemy;
 
 public abstract class Enemy extends cls.Actor {
+	
+	private static double getOriginalPosition(int i, int radius) {
+		int w = cls.Level.TILE_SIZE - radius * 2;
+		return i * cls.Level.TILE_SIZE + w * Math.random() / 2 + radius; 
+	}
 
-	public Enemy(String name, int x, int y, int radius, int mass, int health) {
-		super(name, x, y, radius, mass, health);
+	public Enemy(String name, int x, int y, int r, int mass, int health) {
+		super(name, getOriginalPosition(x, r), getOriginalPosition(y, r), r, mass, health);
 	}
 
 	public void draw() {

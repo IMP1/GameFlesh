@@ -7,7 +7,7 @@ public class SkeletonEnemy extends Enemy {
 	private static final int HEALTH = 100;
 
 	public SkeletonEnemy(int i, int j) {
-		super("Skeleton", i * cls.Level.TILE_SIZE, j * cls.Level.TILE_SIZE, RADIUS, MASS, HEALTH);
+		super("Skeleton", i, j, RADIUS, MASS, HEALTH);
 	}
 
 }
