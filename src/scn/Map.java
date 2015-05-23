@@ -135,10 +135,10 @@ public class Map extends Scene {
 	public ObjectWithMass[] getObjectsWithMass() {
 		ArrayList<ObjectWithMass> objs = new ArrayList<ObjectWithMass>();
 		for (Enemy e : level.enemies) {
-			objs.add(e);
+			if (!e.isDestroyed()) objs.add(e);
 		}
 		for (Player p : players) {
-			objs.add(p);
+			if (!p.isDestroyed()) objs.add(p);
 		}
 		for (Projectile p : projectiles) {
 			if (p.getClass() == Boulder.class) {
