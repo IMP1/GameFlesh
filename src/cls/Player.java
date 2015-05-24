@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import cls.object.DestroyableObject;
 
-import run.Main;
 import scn.SceneManager;
 
 public class Player extends cls.Actor {
@@ -35,7 +34,7 @@ public class Player extends cls.Actor {
 	public void move(double dx, double dy) {
 		double newX = pixelX + dx;
 		double newY = pixelY + dy;
-		if (((scn.Map)SceneManager.scene()).isPixelPassable(newX, newY) || Main.DEBUGGING && jog.Input.isKeyDown(KeyEvent.VK_CONTROL)) {
+		if (((scn.Map)SceneManager.scene()).isPixelPassable(newX, newY) || jog.Input.isKeyDown(KeyEvent.VK_CONTROL)) {
 			pixelX = newX;
 			pixelY = newY;
 		}

@@ -2,6 +2,7 @@ package cls.trap;
 
 import lib.Sprite;
 import run.Cache;
+import run.Main;
 import scn.Map;
 import cls.object.DestroyableObject;
 import cls.object.Projectile;
@@ -63,7 +64,7 @@ public class BoulderTrap extends Trap {
 	@Override
 	public void draw() {
 		super.draw();
-		if (((scn.Map)scn.SceneManager.scene()).hasVisited(boulderX, boulderY)) {
+		if (((scn.Map)scn.SceneManager.scene()).hasVisited(boulderX, boulderY) && Main.DEBUGGING) {
 			drawBoulderEnterPoint();
 		}
 	}
