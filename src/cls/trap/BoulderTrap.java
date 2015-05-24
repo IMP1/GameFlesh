@@ -1,19 +1,41 @@
 package cls.trap;
 
+import lib.Sprite;
+import run.Cache;
+import scn.Map;
 import cls.object.DestroyableObject;
 import cls.object.Projectile;
 
 public class BoulderTrap extends Trap {
 	
+	private final static jog.Image boulderImage = Cache.loadImage("gfx/traps/boulder.png");
+	
 	public final class Boulder extends Projectile {
 		
 		public final static int SPEED = 256;
 		
+		private Sprite animation;
+		
 		private Boulder(int x, int y, int dx, int dy) {
 			super((x + 0.5) * cls.Level.TILE_SIZE, (y + 0.5) * cls.Level.TILE_SIZE, 16, 600, 9999);
-			this.mass = 600;
+			animation = new Sprite(boulderImage, 4, 4, 0.2);
+			int direction = 0;
+			direction += dx == 0 ?  1 :  0;
+			direction += dy == 0 ?  2 :  0;
+			direction += dy < 0  ?  1 :  0;
+			direction += dy > 0  ? -1 :  0;
+			direction += dx < 0  ? -1 :  0;
+			direction += dx > 0  ?  1 :  0;
+			animation.setPose(direction);
+			mass = 600;
 			vx = dx * SPEED;
 			vy = dy * SPEED;
+		}
+		
+		@Override
+		public void update(double dt, Map scene) {
+			super.update(dt, scene);
+			animation.update(dt);
 		}
 		
 		@Override
@@ -22,9 +44,8 @@ public class BoulderTrap extends Trap {
 		}
 		
 		public void draw() {
-			jog.Graphics.setColour(255, 128, 128);
 			if (((scn.Map)scn.SceneManager.scene()).isPixelVisible(pixelX, pixelY)) {
-				jog.Graphics.circle(true, pixelX, pixelY, radius);
+				animation.draw(pixelX - radius, pixelY - radius);
 			}
 		}
 		
