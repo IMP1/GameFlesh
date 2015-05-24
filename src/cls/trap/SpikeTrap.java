@@ -39,8 +39,10 @@ public class SpikeTrap extends Trap {
 			int w = cls.Level.TILE_SIZE;
 			int x = triggerX * w;
 			int y = triggerY * w;
-			if (!((scn.Map)scn.SceneManager.scene()).isTilePassable(triggerX, triggerY)) {
-				jog.Graphics.setColour(128, 128, 128, 32);
+			if (!((scn.Map)scn.SceneManager.scene()).isTileVisible(triggerX, triggerY)) {
+				jog.Graphics.setColour(255, 255, 255, 128);
+			} else {
+				jog.Graphics.setColour(255, 255, 255);
 			}
 			animation.draw(x, y);
 		}
