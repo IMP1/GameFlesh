@@ -6,10 +6,13 @@ public class ArrowTrap extends Trap {
 	
 	public final class Arrow extends Projectile {
 		
-		public final static int SPEED = 512;
+		public final static int SPEED   = 512;
+		private final static int DAMAGE = 10;
+		private final static int RADIUS = 4;
+		private final static int MASS   = 2;
 		
 		private Arrow(int x, int y, int dx, int dy) {
-			super((x + 0.5) * cls.Level.TILE_SIZE, (y + 0.5) * cls.Level.TILE_SIZE, 4, 2, 10);
+			super((x + 0.5) * cls.Level.TILE_SIZE, (y + 0.5) * cls.Level.TILE_SIZE, RADIUS, MASS, DAMAGE);
 			vx = dx * SPEED;
 			vy = dy * SPEED;
 		}
