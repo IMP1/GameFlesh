@@ -10,17 +10,27 @@ public class SpikeTrap extends Trap {
 	private final static jog.Image IMAGE = Cache.loadImage("gfx/traps/spikes.png");
 	private final static int DAMAGE = 50;
 	
+	private boolean hit;
 	private Animation animation;
 
 	public SpikeTrap(int x, int y) {
 		super(x, y, "Spike Trap", 1, 400);
-		animation = new Animation(IMAGE, 7, 1, 7, false, 0, 0, 0, 1, 0.1, 0.1, 0.5);
+		animation = new Animation(IMAGE, 7, 1, 7, false, 0.04, 0.08, 0.16, 1, 0.1, 0.1, 0.5);
 	}
 
 	@Override
 	public void update(double dt, Map scene) {
 		super.update(dt, scene);
-		animation.update(dt);
+		if (animation.isPlaying()) {
+			animation.update(dt);
+			if (animation.isOnFrame(3) && !hit) {
+				double x = (triggerX + 0.5) * cls.Level.TILE_SIZE;
+				double y = (triggerY + 0.5) * cls.Level.TILE_SIZE;
+				DestroyableObject obj = scene.getObjectAt(x, y, cls.Level.TILE_SIZE / 2);
+				if (obj != null) obj.damage(DAMAGE);
+				hit = true;
+			}
+		}
 	}
 	
 	@Override
@@ -28,8 +38,7 @@ public class SpikeTrap extends Trap {
 		if (!animation.isPlaying()) {
 			animation.reset();
 			animation.start();
-			DestroyableObject obj = scene.getObjectAt(triggerX, triggerY, 32);
-			if (obj != null) obj.damage(DAMAGE);
+			hit = false;
 		}
 	}
 	
