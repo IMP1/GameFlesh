@@ -12,6 +12,7 @@ public class BoulderTrap extends Trap {
 	
 	private final static jog.Image boulderImage = Cache.loadImage("gfx/traps/boulder.png");
 	private final static int boulderRumble = 1;
+	private final static int boulderHitShake = 3;
 	
 	public final class Boulder extends Projectile {
 		
@@ -39,6 +40,7 @@ public class BoulderTrap extends Trap {
 		@Override
 		protected void destroy() {
 			Screenshake.removeRumble(boulderRumble, boulderRumble);
+			Screenshake.addScreenshake(boulderHitShake, boulderHitShake, 0.2);
 			super.destroy();
 		}
 		
