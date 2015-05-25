@@ -41,7 +41,7 @@ public abstract class Projectile extends cls.object.ObjectWithMass {
 		destroy();
 	}
 	
-	private void destroy() {
+	protected void destroy() {
 		finished = true;
 	}
 	

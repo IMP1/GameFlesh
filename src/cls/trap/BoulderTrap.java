@@ -1,5 +1,6 @@
 package cls.trap;
 
+import lib.Screenshake;
 import lib.Sprite;
 import run.Cache;
 import run.Main;
@@ -10,6 +11,7 @@ import cls.object.Projectile;
 public class BoulderTrap extends Trap {
 	
 	private final static jog.Image boulderImage = Cache.loadImage("gfx/traps/boulder.png");
+	private final static int boulderRumble = 1;
 	
 	public final class Boulder extends Projectile {
 		
@@ -31,6 +33,13 @@ public class BoulderTrap extends Trap {
 			mass = 600;
 			vx = dx * SPEED;
 			vy = dy * SPEED;
+			Screenshake.addRumble(boulderRumble, boulderRumble);
+		}
+		
+		@Override
+		protected void destroy() {
+			Screenshake.removeRumble(boulderRumble, boulderRumble);
+			super.destroy();
 		}
 		
 		@Override

@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import lib.Camera;
+import lib.Screenshake;
 
 import cls.Level;
 import cls.Level.Tile;
@@ -63,6 +64,7 @@ public class Map extends Scene {
 		updateTraps(dt);
 		updateProjectiles(dt);
 		removeTheDead();
+		Screenshake.update(dt);
 	}
 	
 	private void updatePlayers(double dt) {
@@ -168,7 +170,9 @@ public class Map extends Scene {
 	@Override
 	public void draw() {
 		camera.set();
+		Screenshake.set();
 		drawMap();
+		Screenshake.unset();
 		camera.unset();
 		drawMiniMap();
 	}
@@ -295,6 +299,9 @@ public class Map extends Scene {
 			for (Player p : players) {
 				p.heal(100, true);
 			}
+		}
+		if (key == KeyEvent.VK_HOME) {
+			Screenshake.addScreenshake(4, 4, 0.5);
 		}
 	}
 
