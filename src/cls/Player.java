@@ -3,6 +3,8 @@ package cls;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
+import jog.Graphics.HorizontalAlign;
+
 import cls.object.DestroyableObject;
 
 import scn.SceneManager;
@@ -68,7 +70,7 @@ public class Player extends cls.Actor {
 		jog.Graphics.circle(true, pixelX, pixelY, radius);
 		jog.Graphics.setColour(DestroyableObject.getHealthColor((double)currentHealth / maxHealth));
 		String health = String.format("%d / %d", currentHealth, maxHealth);
-		jog.Graphics.printCentred(health, pixelX - radius, pixelY - radius * 2, radius);
+		jog.Graphics.print(health, pixelX, pixelY - radius * 2, HorizontalAlign.CENTRE);
 	}
 
 }

@@ -2,6 +2,8 @@ package scn;
 
 import java.awt.event.KeyEvent;
 
+import jog.Graphics.HorizontalAlign;
+
 import cls.LevelGenerator;
 
 public class Title extends Scene {
@@ -58,12 +60,12 @@ public class Title extends Scene {
 		}
 		jog.Graphics.pop();
 		if (currentStage == Stage.MENU_FADE_IN) {
-			jog.Graphics.printCentred("Mnul", 0, logoPosition -64, jog.Window.getWidth());
+			jog.Graphics.print("Mnul", jog.Window.getWidth() / 2, logoPosition -64, HorizontalAlign.CENTRE);
 		}
 		if (currentStage == Stage.LOADING_MAP) {
 			jog.Graphics.push();
 			jog.Graphics.scale(2, 2);
-			jog.Graphics.printCentred(LevelGenerator.getMessage(), 0, 128, jog.Window.getWidth() / 2);
+			jog.Graphics.print(LevelGenerator.getMessage(), jog.Window.getWidth() / 2, 128, HorizontalAlign.CENTRE);
 			jog.Graphics.pop();
 		}
 	}

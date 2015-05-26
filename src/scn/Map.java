@@ -3,6 +3,8 @@ package scn;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+import jog.Graphics.HorizontalAlign;
+
 import lib.Camera;
 import lib.Screenshake;
 
@@ -192,8 +194,8 @@ public class Map extends Scene {
 		}
 		// ---
 		jog.Graphics.setColour(255, 255, 255);
-		jog.Graphics.printCentred("S", level.startX * Level.TILE_SIZE, level.startY * Level.TILE_SIZE, Level.TILE_SIZE);
-		jog.Graphics.printCentred("E", level.endX * Level.TILE_SIZE, level.endY * Level.TILE_SIZE, Level.TILE_SIZE);
+		jog.Graphics.print("S", (level.startX + 0.5) * Level.TILE_SIZE, level.startY * Level.TILE_SIZE, HorizontalAlign.CENTRE);
+		jog.Graphics.print("E", (level.endX + 0.5) * Level.TILE_SIZE, level.endY * Level.TILE_SIZE, HorizontalAlign.CENTRE);
 		// ---
 		for (Trap t : level.traps) {
 			t.draw();
