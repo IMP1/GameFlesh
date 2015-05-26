@@ -18,6 +18,7 @@ import cls.object.ItemDrop;
 import cls.trap.BoulderTrap.Boulder;
 import cls.trap.Trap;
 import cls.enemy.Enemy;
+import cls.gui.Popup;
 import cls.Player;
 
 public class Map extends Scene {
@@ -26,6 +27,7 @@ public class Map extends Scene {
 	private Camera camera;
 	private Player[] players;
 	private ArrayList<Projectile> projectiles;
+	private ArrayList<Popup> popups;
 	private ArrayList<ItemDrop> itemDrops;
 	private boolean[][] visible;
 	private boolean[][] visited;
@@ -42,6 +44,7 @@ public class Map extends Scene {
 		players = new Player[1];
 		players[0] = new Player(level.startX, level.startY);
 		projectiles = new ArrayList<Projectile>();
+		popups = new ArrayList<Popup>();
 		itemDrops = new ArrayList<ItemDrop>();
 		visible = new boolean[level.height][level.width];
 		visited = new boolean[level.height][level.width];
@@ -65,6 +68,7 @@ public class Map extends Scene {
 		updateCamera();
 		updateTraps(dt);
 		updateProjectiles(dt);
+		updatePopups(dt);
 		removeTheDead();
 		Screenshake.update(dt);
 	}
@@ -118,6 +122,12 @@ public class Map extends Scene {
 		}
 	}
 	
+	private void updatePopups(double dt) {
+		for (Popup p: popups) {
+			p.update(dt);
+		}
+	}
+	
 	private void removeTheDead() {
 		for (int i = projectiles.size() - 1; i >= 0; i --) {
 			if (projectiles.get(i).isFinished()) {
@@ -132,6 +142,11 @@ public class Map extends Scene {
 		for (int i = level.enemies.size() - 1; i >= 0; i --) {
 			if (level.enemies.get(i).isDestroyed()) {
 				level.enemies.remove(i);
+			}
+		}
+		for (int i = popups.size() - 1; i >= 0; i --) {
+			if (popups.get(i).isFinished()) {
+				popups.remove(i);
 			}
 		}
 	}
@@ -207,6 +222,9 @@ public class Map extends Scene {
 			p.draw();
 		}
 		drawProjectiles();
+		for (Popup p : popups) {
+			p.draw();
+		}
 	}
 	
 	private void drawMiniMap() {
@@ -267,6 +285,10 @@ public class Map extends Scene {
 	
 	public boolean hasVisited(int i, int j) {
 		return visited[j][i];
+	}
+	
+	public void addPopup(Popup p) {
+		popups.add(p);
 	}
 	
 	public void addProjectile(Projectile p) {

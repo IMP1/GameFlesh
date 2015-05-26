@@ -1,5 +1,7 @@
 package cls.object;
 
+import cls.gui.Popup;
+
 public abstract class DestroyableObject extends ObjectWithMass {
 
 	protected int maxHealth;
@@ -15,6 +17,9 @@ public abstract class DestroyableObject extends ObjectWithMass {
 	
 	public void damage(int damage) {
 		changeHealth(-damage);
+		double x = pixelX + Math.random() * radius - radius / 2;
+		Popup p = new Popup(String.valueOf(damage), x, pixelY - radius);
+		((scn.Map)scn.SceneManager.scene()).addPopup(p);
 	}
 	
 	protected void changeHealth(int damage) {
