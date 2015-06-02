@@ -19,7 +19,7 @@ import cls.trap.BoulderTrap.Boulder;
 import cls.trap.Trap;
 import cls.enemy.Enemy;
 import cls.gui.Popup;
-import cls.Player;
+import cls.player.Player;
 
 public class Map extends Scene {
 	
@@ -32,8 +32,9 @@ public class Map extends Scene {
 	private boolean[][] visible;
 	private boolean[][] visited;
 
-	public Map(Level level) {
+	public Map(Level level, Player[] players) {
 		this.level = level;
+		this.players = players;
 	}
 
 	@Override
@@ -41,8 +42,9 @@ public class Map extends Scene {
 		jog.Graphics.setBackgroundColour(64, 64, 64);
 		camera = new Camera();
 		camera = new Camera(0, 0, level.width * Level.TILE_SIZE, level.height * Level.TILE_SIZE);
-		players = new Player[1];
-		players[0] = new Player(level.startX, level.startY);
+		for (Player p : players) {
+			p.setStartPosition(level.startX, level.startY);
+		}
 		projectiles = new ArrayList<Projectile>();
 		popups = new ArrayList<Popup>();
 		itemDrops = new ArrayList<ItemDrop>();
