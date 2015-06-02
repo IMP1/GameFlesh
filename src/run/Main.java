@@ -1,21 +1,20 @@
 package run;
 
-import jog.Window.WindowMode;
 import scn.Scene;
 import scn.Title;
 
 public class Main extends run.Game {
 
-	public static final boolean DEBUGGING = false;
+	public static final boolean DEBUGGING = true;
 	
 	public Main() {
 		super(new Title(), "Depths", 960, 640, 15);
 	}
 	
 	@Override
-	protected void load(int width, int height, String title, Scene startingScene, WindowMode windowMode) {
+	protected void setup(Scene startingScene) {
 		Data.load();
-		super.load(width, height, title, startingScene, windowMode);
+		super.setup(startingScene);
 	}
 	
 	public static void main(String[] args) {
