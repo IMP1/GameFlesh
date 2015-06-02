@@ -18,7 +18,7 @@ public abstract class DestroyableObject extends ObjectWithMass {
 	public void damage(int damage) {
 		changeHealth(-damage);
 		double x = pixelX + Math.random() * radius - radius / 2;
-		Popup p = new Popup(String.valueOf(damage), x, pixelY - radius);
+		Popup p = new Popup(String.valueOf(damage), x, pixelY - radius * 2);
 		((scn.Map)scn.SceneManager.scene()).addPopup(p);
 	}
 	

@@ -46,7 +46,7 @@ public class Popup {
 		if (timer >= duration) {
 			finished = true;
 		}
-		offsetY = -lib.Easing.cubicOut(timer, 32, duration);
+		offsetY = -lib.maths.Easing.cubicOut(timer, 16, duration);
 	}
 	
 	public void draw() {
