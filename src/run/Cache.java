@@ -2,12 +2,12 @@ package run;
 
 import java.util.HashMap;
 
-public final class Cache {
+public class Cache {
 	private Cache() {}
 	
 	private static HashMap<String, jog.Image> images = new HashMap<String, jog.Image>();
 	
-	public static jog.Image loadImage(String path) {
+	public static jog.Image image(String path) {
 		if (!images.containsKey(path)) {
 			 images.put(path, new jog.Image(path));
 		}
