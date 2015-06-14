@@ -650,6 +650,7 @@ public class LevelGenerator {
 	}
 	
 	private static void placeHorizontalHiddenWall(int x, int y) {
+		if (isExit(x, y) || isExit(x, y - 1)) return;
 		setTile(x, y, Tile.FAKE_WALL1);
 		if (getTile(x - 1, y + 1).isWall(true) || getTile(x + 1, y + 1).isWall(true)) {
 			setTile(x, y + 1, Tile.FAKE_WALL1);
