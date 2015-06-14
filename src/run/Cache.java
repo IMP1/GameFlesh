@@ -8,6 +8,7 @@ public class Cache {
 	private static HashMap<String, jog.Image> images = new HashMap<String, jog.Image>();
 	
 	public static jog.Image image(String path) {
+		path = "gfx/" + path;
 		if (!images.containsKey(path)) {
 			 images.put(path, new jog.Image(path));
 		}

@@ -7,7 +7,7 @@ import scn.Map;
 
 public class SpikeTrap extends Trap {
 	
-	private final static jog.Image IMAGE = Cache.loadImage("gfx/traps/spikes.png");
+	private final static jog.Image IMAGE = Cache.image("traps/spikes.png");
 	private final static int DAMAGE = 50;
 	
 	private boolean hit;

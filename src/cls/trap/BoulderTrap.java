@@ -10,7 +10,7 @@ import cls.object.Projectile;
 
 public class BoulderTrap extends Trap {
 	
-	private final static jog.Image boulderImage = Cache.loadImage("gfx/traps/boulder.png");
+	private final static jog.Image boulderImage = Cache.image("traps/boulder.png");
 	private final static int boulderRumble = 1;
 	private final static int boulderHitShake = 3;
 	
@@ -22,7 +22,7 @@ public class BoulderTrap extends Trap {
 		
 		private Boulder(int x, int y, int dx, int dy) {
 			super((x + 0.5) * cls.Level.TILE_SIZE, (y + 0.5) * cls.Level.TILE_SIZE, 16, 600, 9999);
-			animation = new Sprite(boulderImage, 4, 4, 0.2);
+			animation = new Sprite(boulderImage, 4, 4, 0.1);
 			int direction = 0;
 			direction += dx == 0 ?  1 :  0;
 			direction += dy == 0 ?  2 :  0;
