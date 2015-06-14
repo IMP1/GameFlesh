@@ -34,6 +34,7 @@ public class LevelGenerator {
 	private static int mapWidth;
 	private static int mapHeight;
 	private static Tile[][] tiles;
+	private static int[][] autoTiles;
 	private static ArrayList<Trap> traps;
 	private static ArrayList<FakeWall> fakeWalls;
 	private static ArrayList<Enemy> enemies;
@@ -67,8 +68,9 @@ public class LevelGenerator {
 	private static void runMapGeneration() {
 		initialise();
 		createLayout();
+		cleanUp();
 		addContent();
-		generatedLevel = new Level(tiles, traps.toArray(new Trap[traps.size()]), fakeWalls, enemies, startX, startY, endX, endY);
+		generatedLevel = new Level(tiles, autoTiles, traps.toArray(new Trap[traps.size()]), fakeWalls, enemies, startX, startY, endX, endY);
 		isFinished = true;
 	}
 	
@@ -90,15 +92,20 @@ public class LevelGenerator {
 		createRooms();
 		createCorridors();
 		joinRooms();
-		cleanUp();
+		fillUp();
+		hideRooms();
+		createColumns();
 	}
 	
 	private static void addContent() {
-		hideRooms();
 		addTraps();
-		createColumns();
 		addEnemies();
 		addTreasure();
+	}
+	
+	private static void cleanUp() {
+		ensureWallThickness();
+		generateAutotiles();
 	}
 
 	private static void createRooms() {
@@ -238,7 +245,7 @@ public class LevelGenerator {
 	}
 		
 	private static void joinRooms() {
-		LevelGenerator.message = "Joining the rooms...";
+		LevelGenerator.message = "Joining rooms...";
 		createDoors();
 		createPassages();
 	}
@@ -388,6 +395,9 @@ public class LevelGenerator {
 		for (int j = 0; j < mapHeight; j ++) {
 			for (int i = 0; i < mapWidth; i ++) {
 				boolean bigFloor = (
+					getTile(i - 1, j - 2).isFloor() &&
+					getTile(i,     j - 2).isFloor() &&
+					getTile(i + 1, j - 2).isFloor() &&
 					getTile(i - 1, j - 1).isFloor() &&
 					getTile(i,     j - 1).isFloor() &&
 					getTile(i + 1, j - 1).isFloor() &&
@@ -398,15 +408,20 @@ public class LevelGenerator {
 					getTile(i,     j + 1).isFloor() &&
 					getTile(i + 1, j + 1).isFloor()
 				);
+				boolean occupied = (
+					isTrapAt(i, j) ||
+					isTrapAt(i, j - 1)
+				);
 				double frequency = 0.1;
-				if (bigFloor && !isTrapAt(i, j) && Math.random() <= frequency) {
+				if (bigFloor && !occupied && Math.random() <= frequency) {
 					setTile(i, j, Tile.WALL1);
+					setTile(i, j - 1, Tile.WALL1);
 				}
 			}
 		}
 	}
 		
-	private static void cleanUp() {
+	private static void fillUp() {
 		for (int j = 0; j < mapHeight; j ++) {
 			for (int i = 0; i < mapWidth; i ++) {
 				if (getTile(i, j) == Tile.NONE) {
@@ -626,11 +641,20 @@ public class LevelGenerator {
 		}
 		for (int i = r.x - 1; i < r.x + r.width + 1; i ++) {
 			if (getTile(i, r.y - 1).isFloor() && !isExit(i, r.y - 2)) {
-				setTile(i, r.y - 1, Tile.FAKE_WALL1);
+				placeHorizontalHiddenWall(i,  r.y - 1);
 			}
 			if (getTile(i, r.y + r.height).isFloor() && !isExit(i, r.y + r.height - 1)) {
-				setTile(i, r.y + r.height, Tile.FAKE_WALL1);
+				placeHorizontalHiddenWall(i,  r.y - 1);
 			}
+		}
+	}
+	
+	private static void placeHorizontalHiddenWall(int x, int y) {
+		setTile(x, y, Tile.FAKE_WALL1);
+		if (getTile(x - 1, y + 1).isWall(true) || getTile(x + 1, y + 1).isWall(true)) {
+			setTile(x, y + 1, Tile.FAKE_WALL1);
+		} else {
+			setTile(x, y - 1, Tile.FAKE_WALL1);
 		}
 	}
 	
@@ -658,6 +682,58 @@ public class LevelGenerator {
 	
 	private static void addTreasure() {
 		// TODO add treasuse
+	}
+	
+	private static void ensureWallThickness() {
+		for (int j = 0; j < mapHeight; j ++) {
+			for (int i = 0; i < mapWidth; i ++) {
+				if (getTile(i, j).isWall() && getTile(i, j - 1).isFloor() && getTile(i, j + 1).isFloor()) {
+					if (getTile(i - 1, j - 1).isWall(true) || getTile(i + 1, j - 1).isWall(true)) {
+						setTile(i, j - 1, Tile.WALL1);
+					} else {
+						setTile(i, j + 1, Tile.WALL1);
+					}
+				}
+			}
+		}
+	}
+	
+	private static void generateAutotiles() {
+		autoTiles = new int[tiles.length][tiles[0].length];
+		for (int j = 0; j < autoTiles.length; j ++) {
+			for (int i = 0; i < autoTiles[j].length; i ++) {
+				autoTiles[j][i] = getAutotileValue(i, j);
+			}
+		}
+	}
+	
+	private static int getAutotileValue(int i, int j) {
+		if (startX == i && startY == j) return 8;
+		if (endX == i && endY == j) return 9;
+		if (getTile(i, j).isFloor()) {
+			if (Math.random() < 0.02) {
+				return 3;
+			} else if (Math.random() < 0.02) {
+				return 2;
+			} else {
+				return 1;
+			}
+		} else if (getTile(i, j).isWall(true)) {
+			int binaryFlagSum = 0;
+			if (getTile(i, j + 1).isFloor()) {
+				if (getTile(i + 1, j).isWall()) binaryFlagSum += 1;
+				if (getTile(i - 1, j).isWall()) binaryFlagSum += 2;
+				return binaryFlagSum + 4;
+			} else {
+				if (getTile(i, j - 1).isFloor()) binaryFlagSum += 1;
+				if (getTile(i + 1, j).isFloor() || (getTile(i + 1, j).isWall(true) && getTile(i + 1, j + 1).isFloor())) binaryFlagSum += 2;
+				if (getTile(i, j + 2).isFloor() && getTile(i, j + 1).isWall(true)) binaryFlagSum += 4;
+				if (getTile(i - 1, j).isFloor() || (getTile(i - 1, j).isWall(true) && getTile(i - 1, j + 1).isFloor())) binaryFlagSum += 8;
+				return binaryFlagSum + 32;
+			}
+		} else {
+			return 0;
+		}
 	}
 	
 	private static boolean validEnemyPlacement(int x, int y) {

@@ -3,12 +3,15 @@ package cls;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import run.Cache;
+
 import cls.enemy.Enemy;
 import cls.object.FakeWall;
 import cls.trap.Trap;
 
 public class Level {
 	
+	public final static jog.Image tileImage = Cache.image("tiles.png");
 	public final static int TILE_SIZE = 48;
 	
 	public enum Tile {
@@ -28,22 +31,27 @@ public class Level {
 		public boolean isFloor() {
 			return (this == FLOOR1 || this == FLOOR2 || this == FLOOR3 || this == FLOOR4);
 		}
+		public boolean isWall(boolean includeFakeWalls) {
+			return (this == WALL1 || (includeFakeWalls && this == FAKE_WALL1));
+		}
 		public boolean isWall() {
-			return (this == WALL1);
+			return isWall(false);
 		}
 	}
 	
 	public final int width;
 	public final int height;
 	public final Tile[][] tiles;
+	public final int[][] autoTiles;
 	public final ArrayList<Enemy> enemies;
 	public final Trap[] traps;
 	public final ArrayList<FakeWall> fakeWalls;
 	public final int startX, startY;
 	public final int endX, endY;
 	
-	Level(Tile[][] tiles, Trap[] traps, ArrayList<FakeWall> fakeWalls, ArrayList<Enemy> enemies, int startX, int startY, int endX, int endY) {
+	Level(Tile[][] tiles, int[][] autoTiles, Trap[] traps, ArrayList<FakeWall> fakeWalls, ArrayList<Enemy> enemies, int startX, int startY, int endX, int endY) {
 		this.tiles = tiles;
+		this.autoTiles = autoTiles;
 		this.traps = traps;
 		this.enemies = enemies;
 		this.fakeWalls = fakeWalls;
