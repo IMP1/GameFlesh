@@ -1,73 +1,61 @@
 package scn;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+
+import run.Cache;
 
 import jog.Graphics.HorizontalAlign;
 
 import cls.LevelGenerator;
+import cls.player.KeyboardMouseInput;
+import cls.player.Player;
 
 public class Title extends Scene {
+	
+	private static lib.Animation fire = new lib.Animation(Cache.image("fire.png"), 4, 1, 4, true, 0.1);
 
 	private enum Stage {
 		INITIAL_SCROLL,
-		MENU_FADE_IN,
-		
+		CHARACTER_SELECTION,
 		LOADING_MAP,
 	}
 	
 	private Stage currentStage;
-	private double timer;
-	private double logoPosition;
-	private lib.Parallax[] backgrounds;
+	private ArrayList<Player> players;
 
 	@Override
 	public void start() {
-		timer = 0;
-		backgrounds = new lib.Parallax[3];
-		backgrounds[0] = new lib.Parallax(new jog.Image("gfx/sky.png"),       0, 0, 0,   true, false);
-		backgrounds[1] = new lib.Parallax(new jog.Image("gfx/mountains.png"), 0, 0, 0.1, true, false);
-		backgrounds[2] = new lib.Parallax(new jog.Image("gfx/terrain.png"),   0, 0, 0.2, true, false);
 		currentStage = Stage.INITIAL_SCROLL;
+		players = new ArrayList<Player>();
+		fire.start();
 		if (run.Main.DEBUGGING) {
-			startGame();
+//			startGame();
 		}
 	}
 
 	@Override
 	public void update(double dt) {
-		timer += dt;
-		for (lib.Parallax p : backgrounds) {
-			p.scroll(dt * 256, 0);
-		}
-		if (timer >= 2 && currentStage == Stage.INITIAL_SCROLL) {
-			currentStage = Stage.MENU_FADE_IN;
-		}
-		if (currentStage == Stage.MENU_FADE_IN) {
-			logoPosition = lib.Easing.bezierCurve(timer - 2, 128, 2, 0, -0.5, 1.5, 1);
+		fire.update(dt);
+		if (currentStage == Stage.INITIAL_SCROLL) {
+			if (jog.Input.isKeyDown(KeyEvent.VK_SPACE)) {
+				players.add(new Player(new KeyboardMouseInput()));
+				startGame();
+			}
 		}
 		if (currentStage == Stage.LOADING_MAP && LevelGenerator.isFinished()) {
-			SceneManager.setScene(new Map(LevelGenerator.getGeneratedMap()));
+			SceneManager.setScene(new Map(LevelGenerator.getGeneratedMap(), players.toArray(new Player[players.size()])));
 			return;
 		}
 	}
 
 	@Override
 	public void draw() {
-		jog.Graphics.push();
-		jog.Graphics.scale(2, 2);
-		for (lib.Parallax p : backgrounds) {
-			p.draw();
-		}
-		jog.Graphics.pop();
-		if (currentStage == Stage.MENU_FADE_IN) {
-			jog.Graphics.print("Mnul", jog.Window.getWidth() / 2, logoPosition -64, HorizontalAlign.CENTRE);
-		}
 		if (currentStage == Stage.LOADING_MAP) {
-			jog.Graphics.push();
-			jog.Graphics.scale(2, 2);
 			jog.Graphics.print(LevelGenerator.getMessage(), jog.Window.getWidth() / 2, 128, HorizontalAlign.CENTRE);
-			jog.Graphics.pop();
 		}
+		fire.draw(256, 256);
+		jog.Graphics.print("Press [Space] to Begin", jog.Window.getWidth() / 2, jog.Window.getHeight() - 128, HorizontalAlign.CENTRE);
 	}
 
 	@Override
@@ -78,9 +66,7 @@ public class Title extends Scene {
 
 	@Override
 	public void keyPressed(int key) {
-		if (key == KeyEvent.VK_SPACE) {
-			startGame();
-		}
+		
 	}
 	
 	private void startGame() {
