@@ -3,8 +3,6 @@ package scn;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-import jog.Graphics.HorizontalAlign;
-
 import lib.Camera;
 import lib.Screenshake;
 
