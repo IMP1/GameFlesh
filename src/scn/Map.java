@@ -39,7 +39,7 @@ public class Map extends Scene {
 
 	@Override
 	public void start() {
-		jog.Graphics.setBackgroundColour(64, 64, 64);
+		jog.Graphics.setBackgroundColour(62, 65, 78);
 		camera = new Camera();
 		camera = new Camera(0, 0, level.width * Level.TILE_SIZE, level.height * Level.TILE_SIZE);
 		for (Player p : players) {
@@ -108,7 +108,7 @@ public class Map extends Scene {
 	}
 	
 	private void updateCameraZoom(double xDifference, double yDifference) {
-		// TODO: Do this when multiplayer works. @multiplayer
+		// TODO: Do this when multiplayer works.
 		getMinZoom();
 	}
 	
@@ -200,20 +200,15 @@ public class Map extends Scene {
 		for (int j = 0; j < level.tiles.length; j ++) {
 			for (int i = 0; i < level.tiles[j].length; i ++) {
 				if (hasVisited(i, j)) {
-					jog.Graphics.setColour(level.tiles[j][i].color);
-					jog.Graphics.rectangle(true, i * Level.TILE_SIZE, j * Level.TILE_SIZE, Level.TILE_SIZE, Level.TILE_SIZE);
+					drawTile(i * Level.TILE_SIZE, j * Level.TILE_SIZE, level.autoTiles[j][i]);
 				}
 				if (!isTileVisible(i, j) && (!level.getTile(i, j).isWall() && level.getTile(i, j) != Level.Tile.FAKE_WALL1 || !hasVisited(i, j))) {
-					jog.Graphics.setColour(0, 0, 32, 96);
+					jog.Graphics.setColour(0, 0, 0, 64);
 					jog.Graphics.rectangle(true, i * Level.TILE_SIZE, j * Level.TILE_SIZE, Level.TILE_SIZE, Level.TILE_SIZE);
 				}
 			}
 		}
-		// ---
 		jog.Graphics.setColour(255, 255, 255);
-		jog.Graphics.print("S", (level.startX + 0.5) * Level.TILE_SIZE, level.startY * Level.TILE_SIZE, HorizontalAlign.CENTRE);
-		jog.Graphics.print("E", (level.endX + 0.5) * Level.TILE_SIZE, level.endY * Level.TILE_SIZE, HorizontalAlign.CENTRE);
-		// ---
 		for (Trap t : level.traps) {
 			t.draw();
 		}
@@ -227,6 +222,16 @@ public class Map extends Scene {
 		for (Popup p : popups) {
 			p.draw();
 		}
+	}
+	
+	private void drawTile(int x, int y, int autoTile) {
+		int imageTileSize = 16;
+		jog.Graphics.setColour(255, 255, 255);
+		int qx = (autoTile % 16) * imageTileSize;
+		int qy = (autoTile / 16) * imageTileSize;
+		java.awt.Rectangle r = new java.awt.Rectangle(qx, qy, imageTileSize, imageTileSize);
+		double scale = Level.TILE_SIZE / imageTileSize;
+		jog.Graphics.drawq(Level.tileImage, r, x, y, scale);
 	}
 	
 	private void drawMiniMap() {
@@ -253,8 +258,13 @@ public class Map extends Scene {
 	}
 	
 	public void destroyFakeWall(int i, int j) {
-		level.tiles[j][i] = Tile.FLOOR1;
-		// Propagate that shizzle along.
+		if (level.getTile(i, j + 1) == Tile.FAKE_WALL1 && level.getTile(i,  j + 2).isFloor()) {
+			level.setTile(i, j + 1, Tile.FLOOR1);
+		} else if (level.getTile(i, j) == Tile.FAKE_WALL1 && level.getTile(i, j - 2).isFloor()) {
+			level.setTile(i, j - 1, Tile.FLOOR1);
+		}
+		level.setTile(i, j, Tile.FLOOR1);
+		// TODO: Propagate that shizzle along.
 	}
 	
 	public boolean isInMap(int i, int j) {
