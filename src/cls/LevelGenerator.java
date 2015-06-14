@@ -161,7 +161,7 @@ public class LevelGenerator {
 	
 	private static Rectangle addRandomRoom(int width, int height) {
 		if (Math.random() < 0.1) {
-			return addRandomRoom(width, height, Tile.WALL1);
+			return addRandomRoom(width, height, Tile.WALL_TOP);
 		} else {
 			return addRandomRoom(width, height, Tile.FLOOR1);
 		}
@@ -217,7 +217,7 @@ public class LevelGenerator {
 	}
 	
 	private static Rectangle addRoom(int x, int y, int width, int height, Tile floorType) {
-		return addRoom(x, y, width, height, floorType, Tile.WALL1);
+		return addRoom(x, y, width, height, floorType, Tile.WALL_TOP);
 	}
 	private static Rectangle addRoom(int x, int y, int width, int height, Tile floorType, Tile wallType) {
 		if (wallType != null) {
@@ -414,8 +414,8 @@ public class LevelGenerator {
 				);
 				double frequency = 0.1;
 				if (bigFloor && !occupied && Math.random() <= frequency) {
-					setTile(i, j, Tile.WALL1);
-					setTile(i, j - 1, Tile.WALL1);
+					setTile(i, j, Tile.WALL_SIDE);
+					setTile(i, j - 1, Tile.WALL_TOP);
 				}
 			}
 		}
@@ -425,7 +425,7 @@ public class LevelGenerator {
 		for (int j = 0; j < mapHeight; j ++) {
 			for (int i = 0; i < mapWidth; i ++) {
 				if (getTile(i, j) == Tile.NONE) {
-					setTile(i, j, Tile.WALL1);
+					setTile(i, j, Tile.WALL_TOP);
 				}
 			}
 		}
@@ -687,11 +687,13 @@ public class LevelGenerator {
 	private static void ensureWallThickness() {
 		for (int j = 0; j < mapHeight; j ++) {
 			for (int i = 0; i < mapWidth; i ++) {
-				if (getTile(i, j).isWall() && getTile(i, j - 1).isFloor() && getTile(i, j + 1).isFloor()) {
+				if (isExit(i, j)) {
+					setTile(i, j - 1, Tile.WALL_TOP);
+				} else if (getTile(i, j).isWall() && getTile(i, j - 1).isFloor() && getTile(i, j + 1).isFloor()) {
 					if (getTile(i - 1, j - 1).isWall(true) || getTile(i + 1, j - 1).isWall(true)) {
-						setTile(i, j - 1, Tile.WALL1);
+						setTile(i, j - 1, Tile.WALL_TOP);
 					} else {
-						setTile(i, j + 1, Tile.WALL1);
+						setTile(i, j + 1, Tile.WALL_SIDE);
 					}
 				}
 			}

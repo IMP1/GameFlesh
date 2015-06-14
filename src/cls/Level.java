@@ -21,7 +21,8 @@ public class Level {
 		FLOOR3(run.Main.DEBUGGING ? 160 : 128, 128, 128), // Ending Room
 		FLOOR4(128, 128, run.Main.DEBUGGING ? 160 : 128), // Boss Room
 		
-		WALL1(64, 64, 64),
+		WALL_TOP(64, 64, 64),
+		WALL_SIDE(64, 64, 64),
 		FAKE_WALL1(64, 64, run.Main.DEBUGGING ? 128 : 64),
 		;
 		public final Color color;
@@ -32,7 +33,7 @@ public class Level {
 			return (this == FLOOR1 || this == FLOOR2 || this == FLOOR3 || this == FLOOR4);
 		}
 		public boolean isWall(boolean includeFakeWalls) {
-			return (this == WALL1 || (includeFakeWalls && this == FAKE_WALL1));
+			return (this == WALL_TOP || this == WALL_SIDE || (includeFakeWalls && this == FAKE_WALL1));
 		}
 		public boolean isWall() {
 			return isWall(false);
@@ -76,5 +77,39 @@ public class Level {
 		if (x == endX && y == endY) return true;
 		return false;
 	}
+	
+	public void setTile(int x, int y, Tile newTile) {
+		tiles[y][x] = newTile;
+		updateAutotiles(x, y);
+	}
+
+	private void updateAutotiles(int x, int y) {
+		for (int j = y - 2; j <= y + 2; j ++) {
+			for (int i = x - 1; i <= x + 1; i ++) {
+				autoTiles[j][i] = getAutotileValue(i, j);
+			}
+		}
+	}
+	
+	private int getAutotileValue(int i, int j) {
+		if (getTile(i, j).isFloor()) {
+			return 1;
+		} else if (getTile(i, j).isWall(true)) {
+			int binaryFlagSum = 0;
+			if (getTile(i, j + 1).isFloor()) {
+				if (getTile(i + 1, j).isWall()) binaryFlagSum += 1;
+				if (getTile(i - 1, j).isWall()) binaryFlagSum += 2;
+				return binaryFlagSum + 4;
+			} else {
+				if (getTile(i, j - 1).isFloor()) binaryFlagSum += 1;
+				if (getTile(i + 1, j).isFloor() || (getTile(i + 1, j).isWall(true) && getTile(i + 1, j + 1).isFloor())) binaryFlagSum += 2;
+				if (getTile(i, j + 2).isFloor() && getTile(i, j + 1).isWall(true)) binaryFlagSum += 4;
+				if (getTile(i - 1, j).isFloor() || (getTile(i - 1, j).isWall(true) && getTile(i - 1, j + 1).isFloor())) binaryFlagSum += 8;
+				return binaryFlagSum + 32;
+			}
+		}
+		return autoTiles[j][i];
+	}
+	
 
 }
