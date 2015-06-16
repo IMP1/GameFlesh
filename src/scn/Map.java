@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import lib.Camera;
 import lib.Screenshake;
 
-import cls.Level;
-import cls.Level.Tile;
+import cls.level.Level;
+import cls.level.Level.Tile;
 import cls.object.DestroyableObject;
 import cls.object.FakeWall;
 import cls.object.ObjectWithMass;

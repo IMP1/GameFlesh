@@ -1,4 +1,4 @@
-package cls;
+package cls.level;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import cls.object.FakeWall;
 import cls.trap.*;
 import cls.enemy.*;
-import cls.Level.Tile;
+import cls.level.Level.Tile;
 
 public class LevelGenerator {
 

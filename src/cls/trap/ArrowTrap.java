@@ -12,14 +12,14 @@ public class ArrowTrap extends Trap {
 		private final static int MASS   = 2;
 		
 		private Arrow(int x, int y, int dx, int dy) {
-			super((x + 0.5) * cls.Level.TILE_SIZE, (y + 0.5) * cls.Level.TILE_SIZE, RADIUS, MASS, DAMAGE);
+			super((x + 0.5) * cls.level.Level.TILE_SIZE, (y + 0.5) * cls.level.Level.TILE_SIZE, RADIUS, MASS, DAMAGE);
 			vx = dx * SPEED;
 			vy = dy * SPEED;
 		}
 		
 		protected boolean canMoveThrough(scn.Map scene, double x, double y) {
-			int i = (int)x / cls.Level.TILE_SIZE;
-			int j = (int)y / cls.Level.TILE_SIZE;
+			int i = (int)x / cls.level.Level.TILE_SIZE;
+			int j = (int)y / cls.level.Level.TILE_SIZE;
 			if (!(scene.isPixelPassable(x, y) || (i == ballistaX && j == ballistaY))) return false;
 			if (scene.getObjectAt(x, y, radius) != null) return false;
 			return true;
@@ -61,8 +61,8 @@ public class ArrowTrap extends Trap {
 	public void draw() {
 		super.draw();
 		if (((scn.Map)scn.SceneManager.scene()).hasVisited(ballistaX, ballistaY)) {
-			int w = cls.Level.TILE_SIZE;
-			int h = cls.Level.TILE_SIZE;
+			int w = cls.level.Level.TILE_SIZE;
+			int h = cls.level.Level.TILE_SIZE;
 			jog.Graphics.setColour(128, 0, 0, 64);
 			jog.Graphics.push();
 			jog.Graphics.translate((ballistaX + 0.5) * w, (ballistaY + 0.5) * h);

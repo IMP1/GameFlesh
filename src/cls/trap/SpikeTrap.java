@@ -24,9 +24,9 @@ public class SpikeTrap extends Trap {
 		if (animation.isPlaying()) {
 			animation.update(dt);
 			if (animation.isOnFrame(3) && !hit) {
-				double x = (triggerX + 0.5) * cls.Level.TILE_SIZE;
-				double y = (triggerY + 0.5) * cls.Level.TILE_SIZE;
-				DestroyableObject obj = scene.getObjectAt(x, y, cls.Level.TILE_SIZE / 2);
+				double x = (triggerX + 0.5) * cls.level.Level.TILE_SIZE;
+				double y = (triggerY + 0.5) * cls.level.Level.TILE_SIZE;
+				DestroyableObject obj = scene.getObjectAt(x, y, cls.level.Level.TILE_SIZE / 2);
 				if (obj != null) obj.damage(DAMAGE);
 				hit = true;
 			}
@@ -45,7 +45,7 @@ public class SpikeTrap extends Trap {
 	@Override
 	public void draw() {
 		if (((scn.Map)scn.SceneManager.scene()).hasVisited(triggerX, triggerY)) {
-			int w = cls.Level.TILE_SIZE;
+			int w = cls.level.Level.TILE_SIZE;
 			int x = triggerX * w;
 			int y = triggerY * w;
 			if (!((scn.Map)scn.SceneManager.scene()).isTileVisible(triggerX, triggerY)) {

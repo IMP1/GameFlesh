@@ -1,4 +1,4 @@
-package cls;
+package cls.level;
 
 import java.awt.Color;
 import java.util.ArrayList;

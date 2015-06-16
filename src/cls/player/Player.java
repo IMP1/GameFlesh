@@ -4,8 +4,8 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
 import cls.object.DestroyableObject;
-import cls.Equipment;
-import cls.Level;
+import cls.equipment.Equipment;
+import cls.level.Level;
 
 import scn.SceneManager;
 

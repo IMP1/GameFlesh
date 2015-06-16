@@ -30,8 +30,8 @@ public abstract class Trap {
 	
 	public void draw() {
 		if (((scn.Map)scn.SceneManager.scene()).hasVisited(triggerX, triggerY)) {
-			int w = cls.Level.TILE_SIZE;
-			int h = cls.Level.TILE_SIZE;
+			int w = cls.level.Level.TILE_SIZE;
+			int h = cls.level.Level.TILE_SIZE;
 			jog.Graphics.setColour(64, 64, 64, 64);
 			jog.Graphics.rectangle(true, triggerX * w + 4, triggerY * h + 4, w - 8, h - 8);
 		}

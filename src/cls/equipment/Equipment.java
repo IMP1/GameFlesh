@@ -1,4 +1,4 @@
-package cls;
+package cls.equipment;
 
 public class Equipment {
 	

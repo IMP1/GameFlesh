@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import run.Cache;
 
-import cls.LevelGenerator;
+import cls.level.LevelGenerator;
 import cls.player.KeyboardMouseInput;
 import cls.player.Player;
 

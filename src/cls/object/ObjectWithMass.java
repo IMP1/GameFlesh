@@ -38,11 +38,11 @@ public abstract class ObjectWithMass {
 	}
 	
 	public int getMapX() {
-		return (int)(pixelX / cls.Level.TILE_SIZE);
+		return (int)(pixelX / cls.level.Level.TILE_SIZE);
 	}
 	
 	public int getMapY() {
-		return (int)(pixelY / cls.Level.TILE_SIZE);
+		return (int)(pixelY / cls.level.Level.TILE_SIZE);
 	}	
 	
 }

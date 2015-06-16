@@ -22,8 +22,8 @@ public class SwingingTrap extends Trap {
 	@Override
 	public void draw() {
 		if (((scn.Map)scn.SceneManager.scene()).hasVisited(triggerX, triggerY)) {
-			int w = cls.Level.TILE_SIZE;
-			int h = cls.Level.TILE_SIZE;
+			int w = cls.level.Level.TILE_SIZE;
+			int h = cls.level.Level.TILE_SIZE;
 			jog.Graphics.setColour(64, 64, 64, 64);
 			if (direction == Direction.HORIZONTAL) {
 				jog.Graphics.rectangle(true, triggerX * w, triggerY * h + 10, w, h - 20);

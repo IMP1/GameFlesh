@@ -26,9 +26,9 @@ public abstract class Actor extends cls.object.DestroyableObject {
 	}
 
 	private void raycastAngle(scn.Map scene, boolean[][] mapVisibility, double angle, boolean overrideMap) {
-		for (int r = 0; r < getSightRadius() * Level.TILE_SIZE; r ++) {
-			int i = (int)(getPixelX() + (Math.cos(angle) * r)) / Level.TILE_SIZE;
-			int j = (int)(getPixelY() + (Math.sin(angle) * r)) / Level.TILE_SIZE;
+		for (int r = 0; r < getSightRadius() * cls.level.Level.TILE_SIZE; r ++) {
+			int i = (int)(getPixelX() + (Math.cos(angle) * r)) / cls.level.Level.TILE_SIZE;
+			int j = (int)(getPixelY() + (Math.sin(angle) * r)) / cls.level.Level.TILE_SIZE;
 			if (scene.isTileOpaque(i, j)) {
 				if (scene.isInMap(i, j)) setTileAsVisibile(mapVisibility, i, j, overrideMap);
 				return;
@@ -50,8 +50,8 @@ public abstract class Actor extends cls.object.DestroyableObject {
 	}
 	
 	public boolean canSeePixel(int x, int y) {
-		int i = (int)x / cls.Level.TILE_SIZE;
-		int j = (int)y / cls.Level.TILE_SIZE;
+		int i = (int)x / cls.level.Level.TILE_SIZE;
+		int j = (int)y / cls.level.Level.TILE_SIZE;
 		return canSeeTile(i, j);
 	}
 	
