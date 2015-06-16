@@ -2,8 +2,6 @@ package cls.gui;
 
 import java.awt.Color;
 
-import jog.Graphics.HorizontalAlign;
-
 public class Popup {
 	
 	public enum Type {
@@ -51,7 +49,7 @@ public class Popup {
 	
 	public void draw() {
 		jog.Graphics.setColour(type.colour);
-		jog.Graphics.print(message, pixelX, pixelY + offsetY, HorizontalAlign.CENTRE);
+		jog.Graphics.printCentred(message, pixelX, pixelY + offsetY);
 	}
 	
 	public boolean isFinished() {

@@ -3,8 +3,6 @@ package cls.player;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
-import jog.Graphics.HorizontalAlign;
-
 import cls.object.DestroyableObject;
 import cls.Equipment;
 import cls.Level;
@@ -22,6 +20,9 @@ public class Player extends cls.Actor {
 //	private int playerID;
 	private InputHandler input;
 	private HashMap<Equipment.Slot, Equipment> equipment;
+	private boolean moving;
+	private boolean rolling;
+	private boolean attacking;
 
 	public Player(InputHandler input) {
 		super("Player " + (playerCount + 1), 0, 0, RADIUS, MASS, HEALTH);
@@ -59,7 +60,7 @@ public class Player extends cls.Actor {
 		jog.Graphics.circle(true, pixelX, pixelY, radius);
 		jog.Graphics.setColour(DestroyableObject.getHealthColor((double)currentHealth / maxHealth));
 		String health = String.format("%d / %d", currentHealth, maxHealth);
-		jog.Graphics.print(health, pixelX, pixelY - radius * 2, HorizontalAlign.CENTRE);
+		jog.Graphics.printCentred(health, pixelX, pixelY - radius * 2);
 	}
 
 }

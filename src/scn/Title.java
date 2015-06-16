@@ -5,8 +5,6 @@ import java.util.ArrayList;
 
 import run.Cache;
 
-import jog.Graphics.HorizontalAlign;
-
 import cls.LevelGenerator;
 import cls.player.KeyboardMouseInput;
 import cls.player.Player;
@@ -52,10 +50,10 @@ public class Title extends Scene {
 	@Override
 	public void draw() {
 		if (currentStage == Stage.LOADING_MAP) {
-			jog.Graphics.print(LevelGenerator.getMessage(), jog.Window.getWidth() / 2, 128, HorizontalAlign.CENTRE);
+			jog.Graphics.printCentred(LevelGenerator.getMessage(), jog.Window.getWidth() / 2, 128);
 		}
 		fire.draw(256, 256);
-		jog.Graphics.print("Press [Space] to Begin", jog.Window.getWidth() / 2, jog.Window.getHeight() - 128, HorizontalAlign.CENTRE);
+		jog.Graphics.printCentred("Press [Space] to Begin", jog.Window.getWidth() / 2, jog.Window.getHeight() - 128);
 	}
 
 	@Override
