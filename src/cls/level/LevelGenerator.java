@@ -468,9 +468,11 @@ public class LevelGenerator {
 				boulderX = r.x + r.width - 1 - (int)(rand[1]);
 			}
 		}
+		boolean sameLocation = trapX == boulderX && trapY == boulderY;
+		boolean tooNearExit = Math.abs(trapX - startX) + Math.abs(trapY - startY) <= 1 ||
+							  Math.abs(trapX - endX)   + Math.abs(trapY - endY)   <= 1; 
 		if (getTile(trapX, trapY).isFloor() && !isExit(trapX, trapY) &&
-				Math.abs(trapX - startX) + Math.abs(trapY - startY) > 1 &&
-				Math.abs(trapX - endX) + Math.abs(trapY - endY) > 1) {
+				 !tooNearExit && !sameLocation) {
 			traps.add(new BoulderTrap(trapX, trapY, boulderX, boulderY));
 		}
 	}
