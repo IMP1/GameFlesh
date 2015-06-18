@@ -3,6 +3,8 @@ package scn;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+import run.Cache;
+
 import lib.Camera;
 import lib.Screenshake;
 
@@ -21,6 +23,7 @@ import cls.player.Player;
 
 public class Map extends Scene {
 	
+	private lib.Animation gate = new lib.Animation(Cache.image("gate.png"), 5, 1, 5, false, 0.5, 0.05, 0.05, 0.05, 0.1);
 	private Level level;
 	private Camera camera;
 	private Player[] players;
@@ -41,18 +44,22 @@ public class Map extends Scene {
 		camera = new Camera();
 		camera = new Camera(0, 0, level.width * Level.TILE_SIZE, level.height * Level.TILE_SIZE);
 		for (Player p : players) {
-			p.setStartPosition(level.startX, level.startY);
+			p.setStartPosition(level.startX, level.startY + 1);
 		}
 		projectiles = new ArrayList<Projectile>();
 		popups = new ArrayList<Popup>();
 		itemDrops = new ArrayList<ItemDrop>();
 		visible = new boolean[level.height][level.width];
 		visited = new boolean[level.height][level.width];
+		gate.start();
 		update(0);
 	}
 
 	@Override
 	public void update(double dt) {
+		if (gate.isPlaying()) {
+			gate.update(dt);
+		}
 		for (int j = 0; j < visible.length; j ++) {
 			for (int i = 0; i < visible[j].length; i ++) {
 				visible[j][i] = false;
@@ -220,15 +227,17 @@ public class Map extends Scene {
 		for (Popup p : popups) {
 			p.draw();
 		}
+		if (gate.isPlaying()) {
+			jog.Graphics.draw(gate, level.startX * Level.TILE_SIZE, level.startY * Level.TILE_SIZE, Level.TILE_SIZE / Level.IMAGE_TILE_SIZE);
+		}
 	}
 	
 	private void drawTile(int x, int y, int autoTile) {
-		int imageTileSize = 16;
 		jog.Graphics.setColour(255, 255, 255);
-		int qx = (autoTile % 16) * imageTileSize;
-		int qy = (autoTile / 16) * imageTileSize;
-		java.awt.Rectangle r = new java.awt.Rectangle(qx, qy, imageTileSize, imageTileSize);
-		double scale = Level.TILE_SIZE / imageTileSize;
+		int qx = (autoTile % 16) * Level.IMAGE_TILE_SIZE;
+		int qy = (autoTile / 16) * Level.IMAGE_TILE_SIZE;
+		java.awt.Rectangle r = new java.awt.Rectangle(qx, qy, Level.IMAGE_TILE_SIZE, Level.IMAGE_TILE_SIZE);
+		double scale = Level.TILE_SIZE / Level.IMAGE_TILE_SIZE;
 		jog.Graphics.drawq(Level.tileImage, r, x, y, scale);
 	}
 	
@@ -243,7 +252,13 @@ public class Map extends Scene {
 		for (int j = 0; j < level.tiles.length; j ++) {
 			for (int i = 0; i < level.tiles[j].length; i ++) {
 				if (hasVisited(i, j)) {
-					jog.Graphics.setColour(level.tiles[j][i].color);
+					if (i == level.startX && j == level.startY) {
+						jog.Graphics.setColour(Level.minimapStartColour);
+					} else if (i == level.endX && j == level.endY) {
+						jog.Graphics.setColour(Level.minimapEndColour);
+					} else {
+						jog.Graphics.setColour(level.tiles[j][i].color);
+					}
 					jog.Graphics.rectangle(true, i * w, j * w, w, w);
 				}
 			}
@@ -272,11 +287,17 @@ public class Map extends Scene {
 	public boolean isPixelPassable(double x, double y) {
 		int i = (int)(x / Level.TILE_SIZE);
 		int j = (int)(y / Level.TILE_SIZE);
-		return isTilePassable(i, j);
+		if (i == level.endX && j == level.endY) {
+			return y > (j + 0.5) * Level.TILE_SIZE &&
+				   x > (i + 0.4) * Level.TILE_SIZE &&
+				   x < (i + 0.6) * Level.TILE_SIZE;
+		} else {
+			return isTilePassable(i, j);
+		}
 	}
 	
 	public boolean isTilePassable(int i, int j) {
-		return isInMap(i, j) && (level.getTile(i, j).isFloor() || level.isExit(i, j));
+		return isInMap(i, j) && (level.getTile(i, j).isFloor() || (i == level.endX && j == level.endY));
 	}
 	
 	public boolean isTileOpaque(int i, int j) { 
