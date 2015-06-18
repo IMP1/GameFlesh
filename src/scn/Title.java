@@ -12,6 +12,7 @@ import cls.player.Player;
 public class Title extends Scene {
 	
 	private static lib.Animation fire = new lib.Animation(Cache.image("fire.png"), 4, 1, 4, true, 0.1);
+	private static jog.Image background = Cache.image("title.png");
 
 	private enum Stage {
 		INITIAL_SCROLL,
@@ -49,17 +50,17 @@ public class Title extends Scene {
 
 	@Override
 	public void draw() {
+		jog.Graphics.draw(background, 0, 0, 4);
 		if (currentStage == Stage.LOADING_MAP) {
 			jog.Graphics.printCentred(LevelGenerator.getMessage(), jog.Window.getWidth() / 2, 128);
 		}
-		fire.draw(256, 256);
+		jog.Graphics.draw(fire, 544, 320, 1.5);
 		jog.Graphics.printCentred("Press [Space] to Begin", jog.Window.getWidth() / 2, jog.Window.getHeight() - 128);
 	}
 
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -74,8 +75,7 @@ public class Title extends Scene {
 
 	@Override
 	public void keyReleased(int key) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
