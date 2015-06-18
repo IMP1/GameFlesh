@@ -53,7 +53,7 @@ public class SpikeTrap extends Trap {
 			} else {
 				jog.Graphics.setColour(255, 255, 255);
 			}
-			animation.draw(x, y);
+			jog.Graphics.draw(animation, x, y);
 		}
 	}
 
