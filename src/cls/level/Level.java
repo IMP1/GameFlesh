@@ -11,7 +11,11 @@ import cls.trap.Trap;
 
 public class Level {
 	
+	public final static Color minimapStartColour = new Color(160, 192, 160);
+	public final static Color minimapEndColour   = new Color(192, 160, 160);
+	
 	public final static jog.Image tileImage = Cache.image("tiles.png");
+	public final static int IMAGE_TILE_SIZE = 16;
 	public final static int TILE_SIZE = 48;
 	
 	public enum Tile {
@@ -85,7 +89,9 @@ public class Level {
 
 	private void updateAutotiles(int x, int y) {
 		for (int j = y - 2; j <= y + 2; j ++) {
+			if (j < 0 || j >= height) continue;
 			for (int i = x - 1; i <= x + 1; i ++) {
+				if (i < 0 || i >= width) continue;
 				autoTiles[j][i] = getAutotileValue(i, j);
 			}
 		}
