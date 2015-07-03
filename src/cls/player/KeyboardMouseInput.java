@@ -13,16 +13,16 @@ public class KeyboardMouseInput implements InputHandler {
 		double dx = 0;
 		double dy = 0;
 		if (jog.Input.isKeyDown(KeyEvent.VK_W)) {
-			dy -= dt * 128;
+			dy -= dt * player.speed();
 		}
 		if (jog.Input.isKeyDown(KeyEvent.VK_A)) {
-			dx -= dt * 128;
+			dx -= dt * player.speed();
 		}
 		if (jog.Input.isKeyDown(KeyEvent.VK_S)) {
-			dy += dt * 128;
+			dy += dt * player.speed();
 		}
 		if (jog.Input.isKeyDown(KeyEvent.VK_D)) {
-			dx += dt * 128;
+			dx += dt * player.speed();
 		}
 		if (dx != 0 || dy != 0) {
 			player.move(dx, dy);

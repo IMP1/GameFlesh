@@ -1,6 +1,6 @@
 package cls.player;
 
-import run.Gamepad;
+import lib.gamepad.Gamepad;
 
 public class GamepadInput implements InputHandler {
 
@@ -16,7 +16,13 @@ public class GamepadInput implements InputHandler {
 	}
 	
 	private void updateMovement(Player player, double dt) {
-		
+		double dx = 0;
+		double dy = 0;
+		dx += controller.getLeftAxisHorizontal() * player.speed() * dt;
+		dy += controller.getLeftAxisVertical() * player.speed() * dt;
+		if (dx != 0 || dy != 0) {
+			player.move(dx, dy);
+		}
 	}
 
 }
