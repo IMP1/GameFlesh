@@ -214,6 +214,9 @@ public class Map extends Scene {
 			}
 		}
 		jog.Graphics.setColour(255, 255, 255);
+		if (gate.isPlaying()) {
+			jog.Graphics.draw(gate, level.startX * Level.TILE_SIZE, level.startY * Level.TILE_SIZE, Level.TILE_SIZE / Level.IMAGE_TILE_SIZE);
+		}
 		for (Trap t : level.traps) {
 			t.draw();
 		}
@@ -226,9 +229,6 @@ public class Map extends Scene {
 		drawProjectiles();
 		for (Popup p : popups) {
 			p.draw();
-		}
-		if (gate.isPlaying()) {
-			jog.Graphics.draw(gate, level.startX * Level.TILE_SIZE, level.startY * Level.TILE_SIZE, Level.TILE_SIZE / Level.IMAGE_TILE_SIZE);
 		}
 	}
 	
