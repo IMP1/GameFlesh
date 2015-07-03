@@ -3,9 +3,12 @@ package scn;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+import lib.gamepad.GamepadManager;
+
 import run.Cache;
 
 import cls.level.LevelGenerator;
+import cls.player.GamepadInput;
 import cls.player.KeyboardMouseInput;
 import cls.player.Player;
 
@@ -38,7 +41,8 @@ public class Title extends Scene {
 		fire.update(dt);
 		if (currentStage == Stage.INITIAL_SCROLL) {
 			if (jog.Input.isKeyDown(KeyEvent.VK_SPACE)) {
-				players.add(new Player(new KeyboardMouseInput()));
+//				players.add(new Player(new KeyboardMouseInput()));
+				players.add(new Player(new GamepadInput(GamepadManager.getGamepads()[0])));
 				startGame();
 			}
 		}
