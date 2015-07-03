@@ -14,6 +14,7 @@ public class Player extends cls.Actor {
 	private final static int RADIUS = 16;
 	private final static int MASS   = 70;
 	private final static int HEALTH = 100;
+	private final static int MOVE_SPEED = 128;
 	
 	private static int playerCount = 0;
 	
@@ -32,6 +33,10 @@ public class Player extends cls.Actor {
 		this.input = input;
 	}
 	
+	public int speed() {
+		return MOVE_SPEED;
+	}
+	
 	public void setStartPosition(int x, int y) {
 		pixelX = (int)((x + 0.5) * Level.TILE_SIZE);
 		pixelY = (int)((y + 0.5) * Level.TILE_SIZE);
@@ -47,6 +52,7 @@ public class Player extends cls.Actor {
 		if (((scn.Map)SceneManager.scene()).isPixelPassable(newX, newY) || jog.Input.isKeyDown(KeyEvent.VK_CONTROL)) {
 			pixelX = newX;
 			pixelY = newY;
+			moving = true;
 		}
 	}
 	
