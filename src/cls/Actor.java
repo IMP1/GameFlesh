@@ -6,9 +6,12 @@ public abstract class Actor extends cls.object.DestroyableObject {
 	
 	private boolean[][] visibility;
 	
-	public Actor(String name, double x, double y, int radius, int mass, int health) {
+	protected double direction;
+	
+	public Actor(String name, double x, double y, double direction, int radius, int mass, int health) {
 		super(x, y, radius, mass, health);
 		this.name = name;
+		this.direction = direction;
 	}
 	
 	public int getSightRadius() {

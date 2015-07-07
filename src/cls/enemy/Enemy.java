@@ -8,7 +8,7 @@ public abstract class Enemy extends cls.Actor {
 	}
 
 	public Enemy(String name, int x, int y, int r, int mass, int health) {
-		super(name, getOriginalPosition(x, r), getOriginalPosition(y, r), r, mass, health);
+		super(name, getOriginalPosition(x, r), getOriginalPosition(y, r), Math.random() * Math.PI * 2, r, mass, health);
 	}
 
 	public void draw() {
@@ -17,7 +17,9 @@ public abstract class Enemy extends cls.Actor {
 		if (((scn.Map)scn.SceneManager.scene()).isTileVisible(i, j)) {
 			jog.Graphics.setColour(256, 256, 256);
 			jog.Graphics.circle(true, pixelX, pixelY, radius);
-			jog.Graphics.print("!", pixelX + 4, pixelY - 16);
+			jog.Graphics.setColour(0, 0, 0);
+			jog.Graphics.circle(false, pixelX, pixelY, radius);
+			jog.Graphics.line(pixelX, pixelY, pixelX + Math.cos(direction) * radius, pixelY + Math.sin(direction) * radius);
 		}
 	}
 

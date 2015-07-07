@@ -43,6 +43,16 @@ public abstract class ObjectWithMass {
 	
 	public int getMapY() {
 		return (int)(pixelY / cls.level.Level.TILE_SIZE);
-	}	
+	}
+	
+	public double getScreenX() {
+		// TODO: This
+		return jog.Window.getWidth() / 2;
+	}
+	
+	public double getScreenY() {
+		// TODO: This
+		return jog.Window.getHeight() / 2;
+	}
 	
 }

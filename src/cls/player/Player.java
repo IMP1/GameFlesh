@@ -26,7 +26,7 @@ public class Player extends cls.Actor {
 	private boolean attacking;
 
 	public Player(InputHandler input) {
-		super("Player " + (playerCount + 1), 0, 0, RADIUS, MASS, HEALTH);
+		super("Player " + (playerCount + 1), 0, 0, 0, RADIUS, MASS, HEALTH);
 //		playerID = playerCount;
 		Player.playerCount ++;
 		equipment = new HashMap<Equipment.Slot, Equipment>();
@@ -40,6 +40,7 @@ public class Player extends cls.Actor {
 	public void setStartPosition(int x, int y) {
 		pixelX = (int)((x + 0.5) * Level.TILE_SIZE);
 		pixelY = (int)((y + 0.5) * Level.TILE_SIZE);
+		direction = Math.PI / 2;
 	}
 	
 	public void equip(Equipment item) {
@@ -56,6 +57,10 @@ public class Player extends cls.Actor {
 		}
 	}
 	
+	public void faceTowards(double direction) {
+		this.direction = direction;  
+	}
+	
 	public void update(double dt) {
 		input.updateInput(this, dt);
 	}
@@ -64,6 +69,10 @@ public class Player extends cls.Actor {
 		int opacity = isDestroyed() ? 64 : 255; 
 		jog.Graphics.setColour(0, 255, 0, opacity);
 		jog.Graphics.circle(true, pixelX, pixelY, radius);
+		jog.Graphics.setColour(0, 0, 0, opacity);
+		jog.Graphics.circle(false, pixelX, pixelY, radius);
+		jog.Graphics.line(pixelX, pixelY, pixelX + Math.cos(direction) * radius, pixelY + Math.sin(direction) * radius);
+		
 		jog.Graphics.setColour(DestroyableObject.getHealthColor((double)currentHealth / maxHealth));
 		String health = String.format("%d / %d", currentHealth, maxHealth);
 		jog.Graphics.printCentred(health, pixelX, pixelY - radius * 2);
