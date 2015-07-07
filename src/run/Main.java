@@ -19,6 +19,12 @@ public class Main extends run.Game {
 		super.setup(startingScene);
 	}
 	
+	@Override
+	protected void updateInput() {
+		super.updateInput();
+		GamepadManager.pump();
+	}
+	
 	public static void main(String[] args) {
 		new Main();
 	}
