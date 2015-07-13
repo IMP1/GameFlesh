@@ -1,11 +1,19 @@
 package cls.player;
 
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
-public class KeyboardMouseInput extends InputHandler {
+import lib.Camera;
 
+public class KeyboardMouseInput extends InputHandler implements jog.Event.KeyboardEventHandler, jog.Event.MouseEventHandler {
+
+	public KeyboardMouseInput() {
+		jog.Event.addKeyboardHandler(this);
+		jog.Event.addMouseHandler(this);
+	}
+	
 	@Override
-	protected void updateMovement(Player player, double dt) {
+	protected void updateMovement(double dt) {
 		double dx = 0;
 		double dy = 0;
 		if (jog.Input.isKeyDown(KeyEvent.VK_W)) {
@@ -26,13 +34,38 @@ public class KeyboardMouseInput extends InputHandler {
 	}
 
 	@Override
-	protected void updateDirection(Player player) {
-		// TODO: get mouse coordinates
-		// TODO: possibly translate into game coordinates
-		// TODO: player.faceTowards(Math.atan2(y, x));
-		double x = jog.Input.getMouseX() - player.getScreenX();
-		double y = jog.Input.getMouseY() - player.getScreenY();
+	protected void updateDirection(Camera camera) {
+		double mx = camera.getMouseWorldX();
+		double my = camera.getMouseWorldY();
+		double x = mx - player.getPixelX();
+		double y = my - player.getPixelY();
 		player.faceTowards(Math.atan2(y, x));
 	}
+
+	@Override
+	public void keyPressed(int key) {
+		if (key == KeyEvent.VK_SPACE) {
+			player.roll();
+		}
+	}
+
+	@Override
+	public void mousePressed(int x, int y, int key) {
+		if (key == MouseEvent.BUTTON1) {
+			player.attack();
+		}
+	}
+
+	@Override
+	public void keyReleased(int key) {}
+
+	@Override
+	public void mouseMoved(int x, int y) {}
+
+	@Override
+	public void mouseScrolled(int x, int y, int scroll) {}
+
+	@Override
+	public void mouseReleased(int x, int y, int key) {}
 
 }
