@@ -27,7 +27,7 @@ public class Level {
 		
 		WALL_TOP(64, 64, 64),
 		WALL_SIDE(64, 64, 64),
-		FAKE_WALL1(64, 64, run.Main.DEBUGGING ? 128 : 64),
+		FAKE_WALL(64, 64, run.Main.DEBUGGING ? 128 : 64),
 		;
 		public final Color color;
 		Tile(int r, int g, int b) {
@@ -37,7 +37,7 @@ public class Level {
 			return (this == FLOOR1 || this == FLOOR2 || this == FLOOR3 || this == FLOOR4);
 		}
 		public boolean isWall(boolean includeFakeWalls) {
-			return (this == WALL_TOP || this == WALL_SIDE || (includeFakeWalls && this == FAKE_WALL1));
+			return (this == WALL_TOP || this == WALL_SIDE || (includeFakeWalls && this == FAKE_WALL));
 		}
 		public boolean isWall() {
 			return isWall(false);

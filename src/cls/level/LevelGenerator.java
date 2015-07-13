@@ -663,7 +663,7 @@ public class LevelGenerator {
 	
 	private static void hideWall(int x, int y) {
 		if (x > 0 && y > 0 && x < mapWidth - 1 && y < mapHeight - 1) {
-			setTile(x, y, Tile.FAKE_WALL1);
+			setTile(x, y, Tile.FAKE_WALL);
 		}
 	}
 	
@@ -769,7 +769,7 @@ public class LevelGenerator {
 		if (isExit(x, y)) return;
 		if (y >= 0 && y < mapHeight && x >= 0 && x < mapWidth) {
 			if (overwrite || tiles[y][x] == Tile.NONE) {
-				if (type == Tile.FAKE_WALL1) {
+				if (type == Tile.FAKE_WALL) {
 					fakeWalls.add(new FakeWall(x, y));
 				}
 				tiles[y][x] = type;
