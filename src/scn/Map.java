@@ -221,7 +221,7 @@ public class Map extends Scene {
 				if (hasVisited(i, j)) {
 					drawTile(i * Level.TILE_SIZE, j * Level.TILE_SIZE, level.autoTiles[j][i]);
 				}
-				if (!isTileVisible(i, j) && (!level.getTile(i, j).isWall() && level.getTile(i, j) != Level.Tile.FAKE_WALL1 || !hasVisited(i, j))) {
+				if (!isTileVisible(i, j) && (!level.getTile(i, j).isWall() && level.getTile(i, j) != Level.Tile.FAKE_WALL || !hasVisited(i, j))) {
 					jog.Graphics.setColour(0, 0, 0, 64);
 					jog.Graphics.rectangle(true, i * Level.TILE_SIZE, j * Level.TILE_SIZE, Level.TILE_SIZE, Level.TILE_SIZE);
 				}
@@ -284,14 +284,26 @@ public class Map extends Scene {
 		jog.Graphics.pop();
 	}
 	
-	public void destroyFakeWall(int i, int j) {
-		if (level.getTile(i, j + 1) == Tile.FAKE_WALL1 && level.getTile(i,  j + 2).isFloor()) {
-			level.setTile(i, j + 1, Tile.FLOOR1);
-		} else if (level.getTile(i, j) == Tile.FAKE_WALL1 && level.getTile(i, j - 2).isFloor()) {
-			level.setTile(i, j - 1, Tile.FLOOR1);
+	public void destroyFakeWall(int i, int j, boolean propogate) {
+		if (level.getTile(i, j) != Tile.FAKE_WALL) return;
+		if (propogate) {
+			if (isSideWall(i, j + 1)) {
+				DestroyableObject obj = getObjectAt((i+0.5) * cls.level.Level.TILE_SIZE, (j+1.5) * cls.level.Level.TILE_SIZE, 2); 
+				if (obj != null && !obj.isDestroyed() && obj instanceof FakeWall) {
+					((FakeWall)obj).destroy(false);
+				} else {
+					level.setTile(i, j + 1, Tile.FLOOR1);
+				}
+			} else if (level.getTile(i, j) == Tile.FAKE_WALL && level.getTile(i, j - 2).isFloor()) {
+				DestroyableObject obj = getObjectAt((i+0.5) * cls.level.Level.TILE_SIZE, (j-0.5) * cls.level.Level.TILE_SIZE, 2); 
+				if (obj != null && !obj.isDestroyed() && obj instanceof FakeWall) {
+					((FakeWall)obj).destroy(false);
+				} else {
+					level.setTile(i, j - 1, Tile.FLOOR1);
+				}
+			}
 		}
 		level.setTile(i, j, Tile.FLOOR1);
-		// TODO: Propagate that shizzle along.
 	}
 	
 	public boolean isInMap(int i, int j) {
@@ -330,6 +342,10 @@ public class Map extends Scene {
 	
 	public boolean hasVisited(int i, int j) {
 		return visited[j][i];
+	}
+	
+	public boolean isSideWall(int i, int j) {
+		return level.getTile(i, j).isWall(true) && !level.getTile(i, j + 1).isWall();
 	}
 	
 	public void addPopup(Popup p) {
