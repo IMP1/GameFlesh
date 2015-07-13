@@ -635,10 +635,10 @@ public class LevelGenerator {
 		hiddenRooms.add(r);
 		for (int j = r.y - 1; j < r.y + r.height + 1; j ++) {
 			if (getTile(r.x - 1, j).isFloor() && !isExit(r.x - 1, j - 1)) {
-				setTile(r.x - 1, j, Tile.FAKE_WALL1);
+				hideWall(r.x - 1, j);
 			}
 			if (getTile(r.x + r.width, j).isFloor() && !isExit(r.x + r.width, j - 1)) {
-				setTile(r.x + r.width, j, Tile.FAKE_WALL1);
+				hideWall(r.x + r.width, j);
 			}
 		}
 		for (int i = r.x - 1; i < r.x + r.width + 1; i ++) {
@@ -653,11 +653,17 @@ public class LevelGenerator {
 	
 	private static void placeHorizontalHiddenWall(int x, int y) {
 		if (isExit(x, y) || isExit(x, y - 1)) return;
-		setTile(x, y, Tile.FAKE_WALL1);
+		hideWall(x, y);
 		if (getTile(x - 1, y + 1).isWall(true) || getTile(x + 1, y + 1).isWall(true)) {
-			setTile(x, y + 1, Tile.FAKE_WALL1);
+			hideWall(x, y + 1);
 		} else {
-			setTile(x, y - 1, Tile.FAKE_WALL1);
+			hideWall(x, y - 1);
+		}
+	}
+	
+	private static void hideWall(int x, int y) {
+		if (x > 0 && y > 0 && x < mapWidth - 1 && y < mapHeight - 1) {
+			setTile(x, y, Tile.FAKE_WALL1);
 		}
 	}
 	
