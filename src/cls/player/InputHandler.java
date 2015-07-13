@@ -1,13 +1,17 @@
 package cls.player;
 
+import lib.Camera;
+
 public abstract class InputHandler {
 	
-	public void updateInput(Player player, double dt) {
-		updateMovement(player, dt);
-		updateDirection(player);
+	protected Player player;
+	
+	public void updateInput(Camera camera, double dt) {
+		updateMovement(dt);
+		updateDirection(camera);
 	}
 
-	protected abstract void updateMovement(Player player, double dt);
-	protected abstract void updateDirection(Player player);
+	protected abstract void updateMovement(double dt);
+	protected abstract void updateDirection(Camera camera);
 	
 }
