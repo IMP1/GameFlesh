@@ -82,7 +82,7 @@ public class Map extends Scene {
 	
 	private void updatePlayers(double dt) {
 		for (Player p : players) {
-			p.update(dt);
+			p.update(camera, dt);
 			p.updateVisibilty(this, visible, true);
 		}
 	}
@@ -175,6 +175,20 @@ public class Map extends Scene {
 			objs.add(d);
 		}
 		return objs.toArray(new ObjectWithMass[objs.size()]);
+	}
+	
+	public DestroyableObject[] getObjectsAt(double x, double y, int leeway) {
+		ArrayList<DestroyableObject> objs = new ArrayList<DestroyableObject>();
+		for (Player p : players) {
+			if (p.isAtPixel(x, y, leeway) && !p.isDestroyed()) objs.add(p);
+		}
+		for (Enemy e : level.enemies) {
+			if (e.isAtPixel(x, y, leeway) && !e.isDestroyed()) objs.add(e);
+		}
+		for (FakeWall w : level.fakeWalls) {
+			if (w.isAtPixel(x, y, leeway)) objs.add(w);
+		}
+		return objs.toArray(new DestroyableObject[objs.size()]);
 	}
 
 	public DestroyableObject getObjectAt(double x, double y, int leeway) {
