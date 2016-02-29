@@ -238,7 +238,7 @@ public class Map extends Scene {
 		int qy = (autoTile / 16) * Level.IMAGE_TILE_SIZE;
 		java.awt.Rectangle r = new java.awt.Rectangle(qx, qy, Level.IMAGE_TILE_SIZE, Level.IMAGE_TILE_SIZE);
 		double scale = Level.TILE_SIZE / Level.IMAGE_TILE_SIZE;
-		jog.Graphics.drawq(Level.tileImage, r, x, y, scale);
+		jog.Graphics.draw(Level.tileImage, r, x, y, scale);
 	}
 	
 	private void drawMiniMap() {

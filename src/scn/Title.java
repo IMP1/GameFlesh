@@ -40,7 +40,7 @@ public class Title extends Scene implements GeneralGamepadHandler {
 	public void update(double dt) {
 		fire.update(dt);
 		if (currentStage == Stage.LOADING_MAP && LevelGenerator.isFinished()) {
-			SceneManager.setScene(new Map(LevelGenerator.getGeneratedMap(), players.toArray(new Player[players.size()])));
+			SceneManager.changeScene(new Map(LevelGenerator.getGeneratedMap(), players.toArray(new Player[players.size()])));
 			return;
 		}
 	}

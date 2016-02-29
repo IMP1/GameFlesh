@@ -1,7 +1,6 @@
 package run;
 
 import lib.gamepad.GamepadManager;
-import scn.Scene;
 import scn.Title;
 
 public class Main extends run.Game {
@@ -13,10 +12,9 @@ public class Main extends run.Game {
 	}
 	
 	@Override
-	protected void setup(Scene startingScene) {
+	protected void setup() {
 		GamepadManager.intitialise();
 		Data.load();
-		super.setup(startingScene);
 	}
 	
 	@Override
