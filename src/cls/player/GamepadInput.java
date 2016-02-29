@@ -1,5 +1,6 @@
 package cls.player;
 
+import lib.Camera;
 import lib.gamepad.Gamepad;
 import lib.gamepad.GamepadManager;
 
@@ -13,7 +14,7 @@ public class GamepadInput extends InputHandler implements GamepadManager.Gamepad
 	}
 
 	@Override
-	protected void updateMovement(Player player, double dt) {
+	protected void updateMovement(double dt) {
 		double dx = 0;
 		double dy = 0;
 		dx += controller.getLeftAxisHorizontal() * player.speed() * dt;
@@ -23,24 +24,27 @@ public class GamepadInput extends InputHandler implements GamepadManager.Gamepad
 		}
 	}
 	
-	protected void updateDirection(Player player) {
-		double x = controller.getRightAxisHorizontal();
-		double y = controller.getRightAxisVertical();
-		if (x != 0 || y != 0) {
-			player.faceTowards(Math.atan2(y, x));
+	protected void updateDirection(Camera camera) {
+		double dx = 0;
+		double dy = 0;
+		dx += controller.getLeftAxisHorizontal();
+		dy += controller.getLeftAxisVertical();
+		if (dx != 0 || dy != 0) {
+			player.faceTowards(Math.atan2(dy, dx));
 		}
 	}
 
 	@Override
 	public void buttonPressed(int button) {
-		System.out.println(button);
+		if (button == Gamepad.A) {
+			player.roll();
+		}
+		if (button == Gamepad.X) {
+			player.attack();
+		}
 	}
 
 	@Override
-	public void buttonReleased(int button) {
-		System.out.println(button);
-	}
-	
-	
+	public void buttonReleased(int button) {}
 	
 }

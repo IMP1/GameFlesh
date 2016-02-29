@@ -18,6 +18,7 @@ public class Title extends Scene implements GeneralGamepadHandler {
 	
 	private static lib.Animation fire = new lib.Animation(Cache.image("fire.png"), 4, 1, 4, true, 0.1);
 	private static jog.Image background = Cache.image("title.png");
+	private static jog.Audio.Source bgm = Cache.audio("FromHere.ogg");
 
 	private enum Stage {
 		INITIAL_SCROLL,
@@ -33,6 +34,7 @@ public class Title extends Scene implements GeneralGamepadHandler {
 		GamepadManager.addGeneralHandler(this);
 		currentStage = Stage.INITIAL_SCROLL;
 		players = new ArrayList<Player>();
+		bgm.play();
 		fire.start();
 	}
 
@@ -57,7 +59,7 @@ public class Title extends Scene implements GeneralGamepadHandler {
 
 	@Override
 	public void close() {
-		
+//		bgm.stop();
 	}
 
 	@Override

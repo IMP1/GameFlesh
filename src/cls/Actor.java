@@ -32,10 +32,16 @@ public abstract class Actor extends cls.object.DestroyableObject {
 		for (int r = 0; r < getSightRadius() * cls.level.Level.TILE_SIZE; r ++) {
 			int i = (int)(getPixelX() + (Math.cos(angle) * r)) / cls.level.Level.TILE_SIZE;
 			int j = (int)(getPixelY() + (Math.sin(angle) * r)) / cls.level.Level.TILE_SIZE;
-			if (scene.isTileOpaque(i, j)) {
+			if (scene.isTileOpaque(i, j) && !scene.isSideWall(i, j)) {
 				if (scene.isInMap(i, j)) setTileAsVisibile(mapVisibility, i, j, overrideMap);
 				return;
 			} else {
+				int i2 = i + (int)Math.signum(Math.cos(angle));
+				int j2 = j + (int)Math.signum(Math.sin(angle));
+				if (scene.isTileOpaque(i2, j) && scene.isTileOpaque(i, j2)) {
+					if (scene.isInMap(i, j)) setTileAsVisibile(mapVisibility, i, j, overrideMap);
+					return;
+				}
 				setTileAsVisibile(mapVisibility, i, j, overrideMap);
 			}
 		}

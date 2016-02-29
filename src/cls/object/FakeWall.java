@@ -14,10 +14,15 @@ public class FakeWall extends DestroyableObject {
 		return Math.abs(x - pixelX) <= radius && Math.abs(y - pixelY) <= radius;
 	}
 	
+	public void destroy(boolean propogate) {
+		super.destroy();
+		scn.Map scene = (scn.Map)scn.SceneManager.scene();
+		scene.destroyFakeWall(mapX, mapY, propogate);
+	}
+	
 	@Override
 	public void destroy() {
-		super.destroy();
-		((scn.Map)scn.SceneManager.scene()).destroyFakeWall(mapX, mapY);
+		destroy(true);
 	}
 	
 	@Override
