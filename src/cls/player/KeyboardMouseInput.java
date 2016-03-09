@@ -68,4 +68,7 @@ public class KeyboardMouseInput extends InputHandler implements jog.Event.Keyboa
 	@Override
 	public void mouseReleased(int x, int y, int key) {}
 
+	@Override
+	public void keyTyped(char text) {}
+
 }
