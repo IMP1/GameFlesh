@@ -57,7 +57,7 @@ public class BoulderTrap extends Trap {
 		
 		public void draw() {
 			if (((scn.Map)scn.SceneManager.scene()).isPixelVisible(pixelX, pixelY)) {
-				animation.draw(pixelX - radius, pixelY - radius);
+				jog.Graphics.draw(animation, pixelX - radius, pixelY - radius);
 			}
 		}
 		
