@@ -754,6 +754,11 @@ public class LevelGenerator {
 				return false;
 			}
 		}
+		for (Trap t : traps) {
+			if (t.isAt(x, y)) {
+				return false;
+			}
+		}
 		int dx = x - startX;
 		int dy = y - startY;
 		if (dx * dx + dy * dy < 3) {
