@@ -14,13 +14,13 @@ public abstract class Enemy extends cls.Actor {
 	public void draw() {
 		int i = (int)(pixelX / cls.level.Level.TILE_SIZE);
 		int j = (int)(pixelY / cls.level.Level.TILE_SIZE);
-		if (((scn.Map)scn.SceneManager.scene()).isTileVisible(i, j)) {
-			jog.Graphics.setColour(256, 256, 256);
-			jog.Graphics.circle(true, pixelX, pixelY, radius);
-			jog.Graphics.setColour(0, 0, 0);
-			jog.Graphics.circle(false, pixelX, pixelY, radius);
-			jog.Graphics.line(pixelX, pixelY, pixelX + Math.cos(direction) * radius, pixelY + Math.sin(direction) * radius);
-		}
+		if (!((scn.Map)scn.SceneManager.scene()).isTileVisible(i, j)) return;
+		
+		jog.Graphics.setColour(256, 256, 256);
+		jog.Graphics.circle(true, pixelX, pixelY, radius);
+		jog.Graphics.setColour(0, 0, 0);
+		jog.Graphics.circle(false, pixelX, pixelY, radius);
+		jog.Graphics.line(pixelX, pixelY, pixelX + Math.cos(direction) * radius, pixelY + Math.sin(direction) * radius);
 	}
 
 	@Override
