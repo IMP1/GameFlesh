@@ -3,10 +3,15 @@ package cls.player;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import scn.SceneManager;
+
 import lib.Camera;
 
 public class KeyboardMouseInput extends InputHandler implements jog.Event.KeyboardEventHandler, jog.Event.MouseEventHandler {
 
+	public static final int ROLL_KEY = KeyEvent.VK_SPACE;
+	public static final int LEVEL_EXIT_KEY = KeyEvent.VK_SHIFT;
+	
 	public KeyboardMouseInput() {
 		jog.Event.addKeyboardHandler(this);
 		jog.Event.addMouseHandler(this);
@@ -44,8 +49,13 @@ public class KeyboardMouseInput extends InputHandler implements jog.Event.Keyboa
 
 	@Override
 	public void keyPressed(int key) {
-		if (key == KeyEvent.VK_SPACE) {
+		if (key == ROLL_KEY) {
 			player.roll();
+		}
+		if (key == LEVEL_EXIT_KEY) {
+			if (player.isAtExit()) {
+				((scn.Map)SceneManager.scene()).nextLevel();
+			}
 		}
 	}
 

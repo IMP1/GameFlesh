@@ -67,6 +67,10 @@ public class Player extends cls.Actor {
 		return 16;
 	}
 	
+	public boolean isAtExit() {
+		return ((scn.Map)SceneManager.scene()).isAtExit(getPixelX(), getPixelY());
+	}
+	
 	public void setStartPosition(int x, int y) {
 		pixelX = (int)((x + 0.5) * Level.TILE_SIZE);
 		pixelY = (int)((y + 0.5) * Level.TILE_SIZE);

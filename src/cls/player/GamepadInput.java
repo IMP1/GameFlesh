@@ -1,10 +1,15 @@
 package cls.player;
 
+import scn.SceneManager;
 import lib.Camera;
 import lib.gamepad.Gamepad;
 import lib.gamepad.GamepadManager;
 
 public class GamepadInput extends InputHandler implements GamepadManager.GamepadHandler {
+	
+	public static final int ROLL_BUTTON = Gamepad.A;
+	public static final int ATTACK_BUTTON = Gamepad.X;
+	public static final int LEVEL_EXIT_BUTTON = Gamepad.LB;
 
 	Gamepad controller;
 	
@@ -36,11 +41,16 @@ public class GamepadInput extends InputHandler implements GamepadManager.Gamepad
 
 	@Override
 	public void buttonPressed(int button) {
-		if (button == Gamepad.A) {
+		if (button == ROLL_BUTTON) {
 			player.roll();
 		}
-		if (button == Gamepad.X) {
+		if (button == ATTACK_BUTTON) {
 			player.attack();
+		}
+		if (button == LEVEL_EXIT_BUTTON) {
+			if (player.isAtExit()) {
+				((scn.Map)SceneManager.scene()).nextLevel();
+			}
 		}
 	}
 

@@ -4,11 +4,13 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import run.Cache;
+import run.Main;
 
 import lib.Camera;
 import lib.Screenshake;
 
 import cls.level.Level;
+import cls.level.LevelGenerator;
 import cls.level.Level.Tile;
 import cls.object.DestroyableObject;
 import cls.object.FakeWall;
@@ -32,6 +34,7 @@ public class Map extends Scene {
 	private ArrayList<ItemDrop> itemDrops;
 	private boolean[][] visible;
 	private boolean[][] visited;
+	private boolean exitingMap;
 
 	public Map(Level level, Player[] players) {
 		this.level = level;
@@ -52,11 +55,16 @@ public class Map extends Scene {
 		visible = new boolean[level.height][level.width];
 		visited = new boolean[level.height][level.width];
 		gate.start();
+		exitingMap = false;
 		update(0);
 	}
 
 	@Override
 	public void update(double dt) {
+		if (exitingMap && LevelGenerator.isFinished()) {
+			SceneManager.changeScene(new Map(LevelGenerator.getGeneratedMap(), players));
+			return;
+		}
 		if (gate.isPlaying()) {
 			gate.update(dt);
 		}
@@ -157,7 +165,34 @@ public class Map extends Scene {
 			}
 		}
 	}
+
+	public void destroyFakeWall(int i, int j, boolean propogate) {
+		if (level.getTile(i, j) != Tile.FAKE_WALL) return;
+		if (propogate) {
+			if (isSideWall(i, j + 1)) {
+				DestroyableObject obj = getObjectAt((i+0.5) * cls.level.Level.TILE_SIZE, (j+1.5) * cls.level.Level.TILE_SIZE, 2); 
+				if (obj != null && !obj.isDestroyed() && obj instanceof FakeWall) {
+					((FakeWall)obj).destroy(false);
+				} else {
+					level.setTile(i, j + 1, Tile.FLOOR1);
+				}
+			} else if (level.getTile(i, j) == Tile.FAKE_WALL && level.getTile(i, j - 2).isFloor()) {
+				DestroyableObject obj = getObjectAt((i+0.5) * cls.level.Level.TILE_SIZE, (j-0.5) * cls.level.Level.TILE_SIZE, 2); 
+				if (obj != null && !obj.isDestroyed() && obj instanceof FakeWall) {
+					((FakeWall)obj).destroy(false);
+				} else {
+					level.setTile(i, j - 1, Tile.FLOOR1);
+				}
+			}
+		}
+		level.setTile(i, j, Tile.FLOOR1);
+	}
 	
+	public void nextLevel() {
+		LevelGenerator.generateMap();
+		exitingMap = true;
+	}
+
 	public ObjectWithMass[] getObjectsWithMass() {
 		ArrayList<ObjectWithMass> objs = new ArrayList<ObjectWithMass>();
 		for (Enemy e : level.enemies) {
@@ -284,28 +319,6 @@ public class Map extends Scene {
 		jog.Graphics.pop();
 	}
 	
-	public void destroyFakeWall(int i, int j, boolean propogate) {
-		if (level.getTile(i, j) != Tile.FAKE_WALL) return;
-		if (propogate) {
-			if (isSideWall(i, j + 1)) {
-				DestroyableObject obj = getObjectAt((i+0.5) * cls.level.Level.TILE_SIZE, (j+1.5) * cls.level.Level.TILE_SIZE, 2); 
-				if (obj != null && !obj.isDestroyed() && obj instanceof FakeWall) {
-					((FakeWall)obj).destroy(false);
-				} else {
-					level.setTile(i, j + 1, Tile.FLOOR1);
-				}
-			} else if (level.getTile(i, j) == Tile.FAKE_WALL && level.getTile(i, j - 2).isFloor()) {
-				DestroyableObject obj = getObjectAt((i+0.5) * cls.level.Level.TILE_SIZE, (j-0.5) * cls.level.Level.TILE_SIZE, 2); 
-				if (obj != null && !obj.isDestroyed() && obj instanceof FakeWall) {
-					((FakeWall)obj).destroy(false);
-				} else {
-					level.setTile(i, j - 1, Tile.FLOOR1);
-				}
-			}
-		}
-		level.setTile(i, j, Tile.FLOOR1);
-	}
-	
 	public boolean isInMap(int i, int j) {
 		return i >= 0 && i < level.width && j >= 0 && j < level.height;
 	}
@@ -348,6 +361,11 @@ public class Map extends Scene {
 		return level.getTile(i, j).isWall(true) && !level.getTile(i, j + 1).isWall();
 	}
 	
+	public boolean isAtExit(double x, double y) {
+		return (int)(x / Level.TILE_SIZE) == level.endX &&
+			   (int)(y / Level.TILE_SIZE) == level.endY;
+	}
+	
 	public void addPopup(Popup p) {
 		popups.add(p);
 	}
@@ -370,26 +388,6 @@ public class Map extends Scene {
 		}
 	}
 	
-	@Override
-	public void close() {
-		
-	}
-
-	@Override
-	public void keyPressed(int key) {
-		if (key == KeyEvent.VK_BACK_QUOTE) {
-			revealAll();
-		}
-		if (key == KeyEvent.VK_BACK_SPACE) {
-			for (Player p : players) {
-				p.heal(100, true);
-			}
-		}
-		if (key == KeyEvent.VK_HOME) {
-			Screenshake.addScreenshake(4, 4, 0.5);
-		}
-	}
-
 	private void revealAll() {
 		for (int j = 0; j < level.height; j ++) {
 			for (int i = 0; i < level.width; i ++) {
@@ -399,7 +397,30 @@ public class Map extends Scene {
 	}
 	
 	@Override
-	public void keyReleased(int key) {}
+	public void keyReleased(int key) {
+		if (Main.DEBUGGING) {
+			if (key == KeyEvent.VK_BACK_QUOTE) {
+				revealAll();
+			}
+			if (key == KeyEvent.VK_BACK_SPACE) {
+				for (Player p : players) {
+					p.heal(100, true);
+				}
+			}
+			if (key == KeyEvent.VK_HOME) {
+				Screenshake.addScreenshake(4, 4, 0.5);
+			}
+			if (key == KeyEvent.VK_PAGE_UP) {
+				Screenshake.addRumble(1, 1);
+			}
+			if (key == KeyEvent.VK_PAGE_DOWN) {
+				Screenshake.addRumble(-1, -1);
+			}
+			if (key == KeyEvent.VK_R && jog.Input.isKeyDown(KeyEvent.VK_CONTROL)) {
+				nextLevel();
+			}
+		}
+	}
 
 	@Override
 	public void mousePressed(int mouseX, int mouseY, int mouseKey) {
